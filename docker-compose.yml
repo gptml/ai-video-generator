@@ -36,8 +36,6 @@ services:
   frontend:
     build: ./frontend
     restart: on-failure
-    env_file:
-      - .env.local
     ports:
       - "3000:3000"
     depends_on:
