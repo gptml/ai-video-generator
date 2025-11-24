@@ -24,14 +24,22 @@ services:
     build: ./backend
     restart: on-failure
     env_file:
-      - ./.env
+      - .env.local
     ports:
       - "4000:4000"
     volumes:
-      - ./backend/src:/home/node/app/src
       - ./data/public:/home/node/app/src/public
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+
+  frontend:
+    build: ./frontend
+    restart: on-failure
+    env_file:
+      - .env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
         condition: service_healthy

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const { REACT_APP_API_URL } = process.env;
+
 const api = axios.create({
-  baseURL: 'https://1541b8ebb5bc.ngrok-free.app',
+  baseURL: REACT_APP_API_URL,
 })
 
 api.interceptors.request.use((config) => {

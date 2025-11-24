@@ -24,7 +24,7 @@ services:
     build: ./backend
     restart: on-failure
     env_file:
-      - ./.env.loc
+      - .env.local
     ports:
       - "4000:4000"
     volumes:
