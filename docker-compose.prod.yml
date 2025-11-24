@@ -11,7 +11,7 @@ services:
     volumes:
       - ./data/postgresql:/var/lib/postgresql/18/docker
     environment:
-      POSTGRES_PASSWORD: @W12$ESR!D(FCG
+      POSTGRES_PASSWORD: '@W12$ESR!D(FCG'
       POSTGRES_USER: root
       POSTGRES_DB: ai-video-generator
     healthcheck:
