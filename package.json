@@ -1,0 +1,19 @@
+{
+  "name": "bidygo-backend",
+  "version": "1.0.0",
+  "scripts": {
+    "local": "docker compose -f docker-compose.loc.yml up",
+    "dev": "docker compose -f docker-compose.dev.yml up",
+    "prod": "docker compose -f docker-compose.prod.yml up"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.9",
+    "@babel/eslint-parser": "^7.23.9",
+    "@babel/plugin-syntax-import-assertions": "^7.23.3",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "husky": "^9.0.11"
+  }
+}

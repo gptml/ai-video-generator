@@ -1,0 +1,37 @@
+version: '3.8'
+
+name: ai-video-generator
+
+services:
+  postgres:
+    image: postgres:18
+    restart: on-failure
+    ports:
+      - "45432:5432"
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/18/docker
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: ai-video-generator
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d ai-video-generator" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: on-failure
+    env_file:
+      - ./.env
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend/src:/home/node/app/src
+      - ./data/public:/home/node/app/src/public
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

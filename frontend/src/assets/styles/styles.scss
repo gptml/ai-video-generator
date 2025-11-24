@@ -1,0 +1,52 @@
+#login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+
+a {
+  color: rgba(0, 0, 0, 0.87);
+  text-decoration: none;
+}
+
+.members {
+  .status-row {
+    display: flex;
+    align-items: center;
+  }
+
+  .status-indicator {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-right: 10px;
+
+    &.inactive {
+      background: orange;
+    }
+
+    &.banned {
+      background: red;
+    }
+
+    &.active {
+      background: green;
+    }
+  }
+
+  .members-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    button{
+      margin-bottom: 20px;
+    }
+  }
+  nav{
+    margin-top: 20px;
+  }
+
+}
