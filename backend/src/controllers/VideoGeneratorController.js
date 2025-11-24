@@ -111,7 +111,7 @@ class VideoGeneratorController {
         model: model.replace('_', '/'),
         input: {
           ...input,
-          image_url: file ? `https://${req.headers.host}/public/${file.filename}` : undefined
+          image_url: file ? `${req.protocol}://${req.headers.host}/public/${file.filename}` : undefined
         },
       }, {
         headers: {
