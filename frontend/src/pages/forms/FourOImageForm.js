@@ -109,8 +109,9 @@ function FourOImageForm() {
             },
             startAdornment: <AttachFileIcon />,
           }}
-          onChange={(file) => handleChange('image', file)}
-          value={formData.image}
+          multiple
+          onChange={(file) => handleChange('images', file)}
+          value={formData.images}
           getInputText={(file) => file ? file.name : 'Выберите файл'}
 
         />
