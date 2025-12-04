@@ -5,10 +5,10 @@ import { TextField, MenuItem, Button, Box, Typography } from "@mui/material";
 import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import Video from "../../components/Video";
 import { useDispatch } from "react-redux";
 import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/generateVideo";
 import { getProfileRequest } from "../../store/reducers/users";
+import Image from "../../components/Image";
 
 const types = [
   {
@@ -42,7 +42,7 @@ function FluxForm() {
   const [formData, setFormData] = React.useState({
     model: 'flux-2/flex-image-to-image',
     title: 'Flux',
-    input: { resolution: '1K' }
+    input: { resolution: '1K', aspect_ratio: '1:1' }
   });
 
   const dispatch = useDispatch();
@@ -64,7 +64,7 @@ function FluxForm() {
     setLoading(true);
 
     const { payload } = await dispatch(generateVideoRequest(formData))
-    // const payload = { taskId: 'bedf681647c3d2dc8feafd6d59073730' }
+    // const payload = { taskId: '7863c2b01f0d22676521eb3df67bf28d' }
     if (payload.error) {
       alert(payload.error)
     }
@@ -83,7 +83,7 @@ function FluxForm() {
       }));
 
       const response = data.payload?.response;
-
+      console.log(response, 8888)
       if (response?.resultUrls?.length) {
         setGeneratedContent(response.resultUrls[0]);
         setState('done');
@@ -175,7 +175,7 @@ function FluxForm() {
         <Button variant="contained" type="submit" loading={loading} disabled={!formData.input.prompt}>Генерация</Button>
 
       </Box>
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
+      {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }

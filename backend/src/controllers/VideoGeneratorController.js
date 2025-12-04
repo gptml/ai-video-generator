@@ -17,7 +17,7 @@ class VideoGeneratorController {
       const { files } = req;
 
       const { userId } = req.auth;
-      const user = Users.find({ id: userId });
+      const user = Users.findOne({ id: userId });
       const { token } = await Models.findOne({ where: { title } });
 
       if (user.tokens < token) {
@@ -71,7 +71,7 @@ class VideoGeneratorController {
       const { files } = req;
 
       const { userId } = req.auth;
-      const user = Users.find({ id: userId });
+      const user = Users.findOne({ id: userId });
       const { token } = await Models.findOne({ where: { title } });
 
       if (user.tokens < token) {
@@ -126,7 +126,7 @@ class VideoGeneratorController {
       const { file } = req;
 
       const { userId } = req.auth;
-      const user = Users.find({ id: userId });
+      const user = Users.findOne({ id: userId });
       const { token } = await Models.findOne({ where: { title } });
 
       if (user.tokens < token) {
@@ -174,7 +174,7 @@ class VideoGeneratorController {
       const { files } = req;
 
       const { userId } = req.auth;
-      const user = Users.find({ id: userId });
+      const user = Users.findOne({ id: userId });
 
       const { token } = await Models.findOne({ where: { title } });
 
@@ -230,6 +230,7 @@ class VideoGeneratorController {
 
 
       if (path === 'api/v1/jobs/recordInfo') {
+        console.log(888888888)
         const data = await checkGeneratedContent(path, taskId, userId, title)
         res.json(data)
       }
@@ -283,7 +284,7 @@ class VideoGeneratorController {
       const { page = 1 } = req.query;
       const limit = 20
       console.log(req.auth)
-      // const history = GenerationsHistory.find({ userId: userId });
+      // const history = GenerationsHistory.findOne({ userId: userId });
       const where = { userId };
       const history = await GenerationsHistory.findAll({
         where: role === 'user' ? where : {},

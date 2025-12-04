@@ -18,11 +18,12 @@ export async function checkGeneratedContent(path, tId, userId, title) {
   )
 
   const { state, taskId, model, resultJson, failMsg, createTime } = data.data;
-  GenerationsHistory.create({
+
+  GenerationsHistory.upsert({
     taskId,
     model,
-    state,
-    result: JSON.parse(resultJson)?.resultUrls[0],
+    state: state || 'generating',
+    result: safeJSONParse(resultJson)?.resultUrls[0],
     failMsg,
     createTime,
     userId,
@@ -67,10 +68,10 @@ export async function checkGeneratedContentVeo(path, tId, userId, title) {
   }
 
   const { successFlag, taskId, model, response, failMsg, createTime } = data.data;
-  GenerationsHistory.create({
+  GenerationsHistory.upsert({
     taskId,
     model,
-    state: states[successFlag],
+    state: states[successFlag] || 'generating',
     result: response?.resultUrls[0],
     failMsg,
     userId,
@@ -101,3 +102,14 @@ export async function checkGeneratedContentVeo(path, tId, userId, title) {
   }
 }
 
+
+function safeJSONParse(str) {
+  if (!str || typeof str !== "string") return null;
+
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.error("Invalid JSON:", str);
+    return null;
+  }
+}

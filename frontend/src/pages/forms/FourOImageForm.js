@@ -8,6 +8,7 @@ import Video from "../../components/Video";
 import { useDispatch } from "react-redux";
 import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/generateVideo";
 import { getProfileRequest } from "../../store/reducers/users";
+import Image from "../../components/Image";
 
 
 const aspectRatios = ['1:1', '3:2', '2:3'];
@@ -184,7 +185,7 @@ function FourOImageForm() {
         <Button variant="contained" type="submit" loading={loading} disabled={!formData.prompt}>Генерация</Button>
 
       </Box>
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
+      {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }

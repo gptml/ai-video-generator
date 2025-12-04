@@ -15,6 +15,7 @@ GenerationsHistory.init({
   taskId: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
   },
   userId: {
     type: DataTypes.STRING,
@@ -29,7 +30,7 @@ GenerationsHistory.init({
     allowNull: false,
   },
   state: {
-    type: DataTypes.ENUM('generating', 'success', 'fail'),
+    type: DataTypes.ENUM('generating', 'success', 'fail', 'waiting'),
     allowNull: false,
   },
   result: {

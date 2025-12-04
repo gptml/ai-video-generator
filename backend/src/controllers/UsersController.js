@@ -219,6 +219,7 @@ class UsersController {
     try {
       const { userId } = req.auth;
 
+
       const user = await Users.findOne({
         where: {
           id: userId,

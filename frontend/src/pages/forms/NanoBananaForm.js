@@ -8,6 +8,7 @@ import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/g
 import Video from "../../components/Video";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { getProfileRequest } from "../../store/reducers/users";
+import Image from "../../components/Image";
 
 const aspectRatios = [
   "1:1",
@@ -157,7 +158,7 @@ function NanoBananaForm() {
         <Button variant="contained" type="submit" loading={loading} disabled={!formData.input.prompt}>Генерация</Button>
 
       </Box>
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
+      {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
