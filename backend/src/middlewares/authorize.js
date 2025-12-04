@@ -6,6 +6,7 @@ const { TOKEN_SECRET } = process.env;
 const EXCLUDE = [
   'GET:/',
   'POST:/users/login',
+  'POST:/users/register',
   'POST:/members/login',
 ];
 

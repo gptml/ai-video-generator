@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
 import { TextField, MenuItem, Button, Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { MuiFileInput } from 'mui-file-input';
@@ -10,42 +9,29 @@ import { useDispatch } from "react-redux";
 import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/generateVideo";
 import { getProfileRequest } from "../../store/reducers/users";
 
-const types = [
-  {
-    model: 'FIRST_AND_LAST_FRAMES_2_VIDEO',
-    title: 'image-to-video',
-  },
-  {
-    model: 'TEXT_2_VIDEO',
-    title: 'text-to-video',
-  },
-]
 
-const aspectRatios = ['16:9', '9:16', 'Auto'];
-const modes = ['fun', 'normal', 'spicy'];
+const aspectRatios = ['1:1', '3:2', '2:3'];
+const nVariants = [1, 2, 4];
+const fallbackModels = ['GPT_IMAGE_1', 'FLUX_MAX'];
 
-function ByteDanceForm() {
+function FourOImageForm() {
 
-  const [type, setType] = React.useState('image-to-video');
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    generationType: 'FIRST_AND_LAST_FRAMES_2_VIDEO',
-    enableTranslation: true,
-    enableFallback: true,
-    aspectRatio: 'Auto',
-    model: 'veo3',
-    title: 'Veo 3'
+    aspectRatio: '1:1',
+    model: 'generate4O',
+    title: '4o Image',
+    nVariants: 1,
+    fallbackModel: 'FLUX_MAX',
+    isEnhance: false,
+    enableFallback: false,
+    uploadCn: false,
   });
 
   const dispatch = useDispatch();
 
-  const handleSetType = useCallback((type) => {
-    setType(type.title);
-    handleChange('generationType', type.model);
-    setGeneratedContent('')
-  }, [])
 
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
@@ -58,8 +44,6 @@ function ByteDanceForm() {
     setLoading(true);
 
     const { payload } = await dispatch(generateVideoRequest(formData))
-    // const payload = { taskId: '430622386b46e8e3fdeef4097167ad47' }
-
     if (payload.error) {
       alert(payload.error)
     }
@@ -71,9 +55,15 @@ function ByteDanceForm() {
     setState('generating');
 
     while (true) {
-      const data = await dispatch(checkStatusRequest({ taskId: payload.taskId, path: 'api/v1/veo/record-info', title: formData.title }));
+
+      const data = await dispatch(checkStatusRequest({
+        taskId: payload.taskId,
+        path: 'api/v1/gpt4o-image/record-info',
+        title: formData.title
+      }));
 
       const response = data.payload?.response;
+
       if (response?.resultUrls?.length) {
         setGeneratedContent(response.resultUrls[0]);
         setState('done');
@@ -94,13 +84,7 @@ function ByteDanceForm() {
 
   return (
     <Wrapper>
-      <GenerationTypes
-        types={types}
-        onClick={handleSetType}
-        selectedType={type}
-      />
       <Typography variant="h4" sx={{ marginBottom: 2 }}>{formData.title}</Typography>
-
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2, width: 600, marginBottom: 10 }}
@@ -111,9 +95,10 @@ function ByteDanceForm() {
           label="Текст"
           variant="outlined"
           fullWidth
+          value={formData.prompt}
           onChange={(ev) => handleChange('prompt', ev.target.value)}
         />
-        {type === 'image-to-video' ? <MuiFileInput
+        <MuiFileInput
           label="Файлы"
           variant="outlined"
           fullWidth
@@ -123,17 +108,16 @@ function ByteDanceForm() {
             },
             startAdornment: <AttachFileIcon />,
           }}
-          helperText="максимум две фотографии"
-          multiple
-          onChange={(file) => handleChange('images', file)}
-          value={formData.images}
+          onChange={(file) => handleChange('image', file)}
+          value={formData.image}
           getInputText={(file) => file ? file.name : 'Выберите файл'}
 
-        /> : null}
-        {type === 'image-to-video' ? <TextField
+        />
+        <TextField
           select
           label="Соотношение сторон"
-          defaultValue="Auto"
+          defaultValue="16:9"
+          value={formData.aspectRatio}
           helperText="Пожалуйста, выберите соотношение сторон"
           onChange={(ev) => handleChange('aspectRatio', ev.target.value)}
 
@@ -143,35 +127,59 @@ function ByteDanceForm() {
               {option}
             </MenuItem>
           ))}
-        </TextField> : null}
+        </TextField>
 
         <TextField
           select
-          label="Mode"
-          defaultValue="normal"
-          helperText="Please select your mode"
-          onChange={(ev) => handleChange('input.mode', ev.target.value)}
+          label="nVariants"
+          defaultValue="1"
+          value={formData.nVariants}
+          onChange={(ev) => handleChange('nVariants', ev.target.value)}
 
         >
-          {modes.map((option) => (
+          {nVariants.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
             </MenuItem>
           ))}
         </TextField>
+
         <FormControlLabel
           control={<Switch defaultChecked />}
-          label="включить перевод"
-          value={formData.enableTranslation}
-          onChange={() => handleChange('enableTranslation', !formData.enableTranslation)}
+          label="Включить откат"
+          value={formData.enableFallback}
+          onChange={() => handleChange('enableFallback', !formData.enableFallback)}
+        />
+
+        <TextField
+          select
+          label="Резервная модель"
+          value={formData.fallbackModel}
+          onChange={(ev) => handleChange('fallbackModel', ev.target.value)}
+
+        >
+          {fallbackModels.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+
+
+        <FormControlLabel
+          control={<Switch defaultChecked />}
+          label="Усиливать"
+          value={formData.isEnhance}
+          onChange={() => handleChange('isEnhance', !formData.isEnhance)}
         />
 
         <FormControlLabel
           control={<Switch defaultChecked />}
-          label="включить откат"
-          value={formData.enableFallback}
-          onChange={() => handleChange('enableFallback', !formData.enableFallback)}
+          label="Загрузить Cn"
+          value={formData.uploadCn}
+          onChange={() => handleChange('uploadCn', !formData.uploadCn)}
         />
+
 
         <Button variant="contained" type="submit" loading={loading} disabled={!formData.prompt}>Генерация</Button>
 
@@ -181,4 +189,4 @@ function ByteDanceForm() {
   );
 }
 
-export default ByteDanceForm;
+export default FourOImageForm;

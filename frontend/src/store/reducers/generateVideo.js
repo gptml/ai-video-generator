@@ -1,15 +1,33 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "../../Api";
 
 export const slice = createSlice({
   name: 'generateVideo',
   initialState: {
     taskId: '',
+    allModels: [],
+    generationHistory: [],
+    totalPages: 0,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(generateVideoRequest.fulfilled, (state, action) => {
       console.log(action.payload);
+    })
+    builder.addCase(getAllModelsRequest.fulfilled, (state, action) => {
+      state.allModels = action.payload.models
+    })
+    builder.addCase(getGenerationHistoryRequest.fulfilled, (state, action) => {
+      state.generationHistory = action.payload.history;
+      state.totalPages = action.payload.totalPages;
+    })
+    builder.addCase(changeTokenCount, (state, action) => {
+      state.allModels = [...state.allModels].map(m => {
+        if (m.id === action.payload.id) {
+          m.token = action.payload.token;
+        }
+        return m;
+      })
     })
   }
 })
@@ -36,5 +54,40 @@ export const checkStatusRequest = createAsyncThunk('generateVideo/checkStatusReq
   }
 
 })
+
+export const getAllModelsRequest = createAsyncThunk('generateVideo/getAllModelsRequest', async (arg, thunkAPI) => {
+  try {
+    const { data } = await Api.getAllModels()
+    return data
+  } catch (e) {
+    console.log(e)
+    return thunkAPI.rejectWithValue(e.response?.data);
+  }
+
+})
+
+export const getGenerationHistoryRequest = createAsyncThunk('generateVideo/getGenerationHistoryRequest', async (arg, thunkAPI) => {
+  try {
+    const { data } = await Api.getGenerationHistory(arg)
+    return data
+  } catch (e) {
+    console.log(e)
+    return thunkAPI.rejectWithValue(e.response?.data);
+  }
+
+})
+
+export const changeTokenCountRequest = createAsyncThunk('generateVideo/changeTokenCountRequest', async (arg, thunkAPI) => {
+  try {
+    const { data } = await Api.changeTokenCount({ models: arg })
+    return data
+  } catch (e) {
+    console.log(e)
+    return thunkAPI.rejectWithValue(e.response?.data);
+  }
+
+})
+
+export const changeTokenCount = createAction('generateVideo/changeTokenCount')
 
 export default slice.reducer;

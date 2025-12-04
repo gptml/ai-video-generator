@@ -1,36 +1,11 @@
 import { DataTypes, Model } from 'sequelize';
-import md5 from 'md5';
 import sequelize from '../services/sequelize.js';
-import jwt from 'jsonwebtoken';
 
-const { TOKEN_SECRET, USER_PASSWORD_SECRET, ADMIN_PASSWORD } = process.env;
 
-class Users extends Model {
-  static async sync(args) {
-    await super.sync(args);
-    const defaults = [{
-      id: 1,
-      name: 'Admin',
-      password: ADMIN_PASSWORD,
-      email: 'admin@ai-video.ru',
-      status: 'active',
-      role: 'admin',
-    }];
-    await Users.bulkCreate(defaults, {
-      ignoreDuplicates: true,
-    });
-  }
-
-  static verify(token = '') {
-    return jwt.verify(token.replace('Bearer ', ''), TOKEN_SECRET);
-  }
-
-  static passwordHash(password = '') {
-    return md5(md5(password) + USER_PASSWORD_SECRET);
-  }
+class Generaions extends Model {
 }
 
-Users.init({
+Generaions.init({
   id: {
     type: DataTypes.BIGINT,
     primaryKey: true,
@@ -83,12 +58,9 @@ Users.init({
   }
 }, {
   sequelize,
-  tableName: 'users',
-  modelName: 'users',
-  indexes: [
-    { fields: ['email'], unique: true },
-  ],
+  tableName: 'generations',
+  modelName: 'generations',
 });
 
 
-export default Users;
+export default Generaions;

@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import app from "./reducers/app";
 import users from "./reducers/users";
+import generateVideo from "./reducers/generateVideo";
 
 const store = configureStore({
   reducer: {
-    app,
     users,
+    generateVideo
   },
 })
 

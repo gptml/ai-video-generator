@@ -1,9 +1,12 @@
 import React from 'react';
 import { Box, Card, CardContent, Chip, Typography } from "@mui/material";
+import * as icons from "../data/icons";
+import { useSelector } from "react-redux";
 
 function ModelCard(props) {
 
-  const { title, description, image, label = 'Генерация видео' } = props;
+  const { title, description, image, label, token  } = props;
+  const user = useSelector(state => state.users.user);
 
   return (
     <Card
@@ -19,7 +22,7 @@ function ModelCard(props) {
     >
       <Box
         component="img"
-        src={image}
+        src={icons[image]}
         alt="Example"
         loading="lazy"
         sx={{
@@ -37,13 +40,20 @@ function ModelCard(props) {
 
       <CardContent sx={{ padding: 0 }}>
         <Chip
-          label={label}
+          label={label || 'Генерация видео'}
           color="primary"
           variant="outlined"
           size="small"
           sx={{ mb: 1 }}
+          disabled={user.tokens < token}
         />
 
+        <Chip
+          label={`Стоимость: ${token} токенов`}
+          size="small"
+          sx={{ mb: 1, ml: 1 }}
+          color={user.tokens < token ? "error" : "success"}
+        />
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
           {title}
         </Typography>

@@ -1,53 +1,47 @@
 import React, { useCallback } from 'react';
 import Wrapper from "../../components/Wrapper";
 import { TextField, MenuItem, Button, Box, Typography } from "@mui/material";
+import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
 import { useDispatch } from "react-redux";
 import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/generateVideo";
-import Audio from "../../components/Audio";
+import Video from "../../components/Video";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { getProfileRequest } from "../../store/reducers/users";
 
-
-const voices = [
-  "Rachel",
-  "Aria",
-  "Roger",
-  "Sarah",
-  "Laura",
-  "Charlie",
-  "George",
-  "Callum",
-  "River",
-  "Liam",
-  "Charlotte",
-  "Alice",
-  "Matilda",
-  "Will",
-  "Jessica",
-  "Eric",
-  "Chris",
-  "Brian",
-  "Daniel",
-  "Lily",
-  "Bill"
+const aspectRatios = [
+  "1:1",
+  "2:3",
+  "3:2",
+  "3:4",
+  "4:3",
+  "4:5",
+  "5:4",
+  "9:16",
+  "16:9",
+  "21:9",
+  "auto"
 ];
 
-function ElevenLabsForm() {
+const outputFormat = ['png', 'jpg'];
+
+
+function NanoBananaForm() {
 
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'elevenlabs/text-to-speech-turbo-2-5',
-    title:'ElevenLabs',
+    model: 'nano-banana-pro',
+    title: 'nano-banana-pro',
     input: {
-      voice: 'Rachel'
+      aspect_ratio: '1:1',
+      output_format: 'png',
     }
   });
 
 
   const dispatch = useDispatch();
-
 
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
@@ -98,6 +92,7 @@ function ElevenLabsForm() {
     setLoading(false);
   }, [formData]);
 
+
   return (
     <Wrapper>
       <Typography variant="h4" sx={{ marginBottom: 2 }}>{formData.title}</Typography>
@@ -112,29 +107,59 @@ function ElevenLabsForm() {
           label="Текст"
           variant="outlined"
           fullWidth
-          onChange={(ev) => handleChange('input.text', ev.target.value)}
+          onChange={(ev) => handleChange('input.prompt', ev.target.value)}
         />
+        <MuiFileInput
+          label="Файл"
+          variant="outlined"
+          fullWidth
+          InputProps={{
+            inputProps: {
+              accept: '.png, .jpeg, .jpg, .webp'
+            },
+            startAdornment: <AttachFileIcon />
+          }}
+          multiple
+          onChange={(file) => handleChange('images', file)}
+          value={formData.images}
+          getInputText={(files) => {
+            if (!files?.length) return "Choose files...";
+            const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+            return `${files.length} files (${(totalSize / 1024 / 1024).toFixed(2)} MB)`;
+          }}
 
+        />
         <TextField
           select
-          label="Голос"
-          value={formData.input.voice}
-          onChange={(ev) => handleChange('input.voice', ev.target.value)}
+          label="Соотношение сторон"
+          defaultValue="1:1"
+          onChange={(ev) => handleChange('input.aspect_ratio', ev.target.value)}
 
         >
-          {voices.map((option) => (
+          {aspectRatios.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
             </MenuItem>
           ))}
         </TextField>
-
-        <Button variant="contained" type="submit" loading={loading} disabled={!formData.input.text}>Генерация</Button>
+        <TextField
+          select
+          label="Формат вывода"
+          onChange={(ev) => handleChange('input.output_format', ev.target.value)}
+          value={formData.input.output_format}
+        >
+          {outputFormat.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Button variant="contained" type="submit" loading={loading} disabled={!formData.input.prompt}>Генерация</Button>
 
       </Box>
-      {generatedContent ? <Audio src={generatedContent} href={generatedContent} /> : null}
+      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
 
-export default ElevenLabsForm;
+export default NanoBananaForm;

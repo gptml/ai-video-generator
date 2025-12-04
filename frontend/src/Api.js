@@ -20,7 +20,29 @@ export default class Api {
     return api.post(`/video-generator/generate/${model}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
   }
 
-  static checkStatus({ taskId, path }) {
-    return api.get(`/video-generator/check-status`, { params: { taskId, path } })
+  static checkStatus({ taskId, path, title }) {
+    return api.get(`/video-generator/check-status`, { params: { taskId, path, title } })
+  }
+
+  static registerUser(data) {
+    return api.post('/users/register', data)
+  }
+
+
+  static getAllModels() {
+    return api.get('/video-generator/models/list')
+  }
+
+
+  static getProfile() {
+    return api.get('/users/profile')
+  }
+
+  static getGenerationHistory(page) {
+    return api.get('/video-generator/history', { params: { page } })
+  }
+
+  static changeTokenCount(data) {
+    return api.post('/video-generator/change-token-count', data)
   }
 }

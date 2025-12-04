@@ -13,9 +13,15 @@ import WanForm from "./pages/forms/WanForm";
 import VeoForm from "./pages/forms/VeoForm";
 import RunawayForm from "./pages/forms/RunawayForm";
 import ElevenLabsForm from "./pages/forms/ElevenLabsForm";
+import Register from "./pages/Register";
+import History from "./pages/History";
+import Settings from "./pages/Settings";
+import FourOImageForm from "./pages/forms/FourOImageForm";
+import NanoBananaForm from "./pages/forms/NanoBananaForm";
+import FluxForm from "./pages/forms/FluxForm";
 
 function App() {
-  const token = useSelector(state => state.app.token);
+  const token = useSelector(state => state.users.token);
 
   return (
     <BrowserRouter>
@@ -31,10 +37,17 @@ function App() {
           <Route path="/create/veo" element={<VeoForm />} />
           <Route path="/create/runaway" element={<RunawayForm />} />
           <Route path="/create/elevenlabs" element={<ElevenLabsForm />} />
+          <Route path="/create/four-o-image" element={<FourOImageForm />} />
+          <Route path="/create/nano-banana" element={<NanoBananaForm />} />
+          <Route path="/create/flux" element={<FluxForm />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/generation-settings" element={<Settings />} />
+          <Route path="/*" element={<Home />} />
         </Routes>
       ) : (
         <Routes>
           <Route path="/*" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       )}
       <ToastContainer />

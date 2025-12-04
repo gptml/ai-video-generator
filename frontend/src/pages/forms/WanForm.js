@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
 import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
-import { TextField, MenuItem, Button, Box, FormControlLabel, Switch } from "@mui/material";
+import { TextField, MenuItem, Button, Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
 import { useDispatch } from "react-redux";
 import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/generateVideo";
 import Video from "../../components/Video";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { getProfileRequest } from "../../store/reducers/users";
 
 const types = [{
   model: 'bytedance/v1-pro-fast-image-to-video',
@@ -25,6 +26,7 @@ function WanForm() {
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
     model: 'bytedance/v1-pro-fast-image-to-video',
+    title: 'Wan',
     input: {
       duration: '5',
       resolution: '720p',
@@ -51,7 +53,6 @@ function WanForm() {
 
     const { payload } = await dispatch(generateVideoRequest(formData))
     // const payload = { taskId: 'bedf681647c3d2dc8feafd6d59073730' }
-
     if (payload.error) {
       alert(payload.error)
     }
@@ -63,7 +64,11 @@ function WanForm() {
     setState('generating');
 
     while (true) {
-      const data = await dispatch(checkStatusRequest({ taskId: payload.taskId, path: 'api/v1/jobs/recordInfo' }));
+      const data = await dispatch(checkStatusRequest({
+        taskId: payload.taskId,
+        path: 'api/v1/jobs/recordInfo',
+        title: formData.title
+      }));
 
       const response = data.payload?.response;
 
@@ -78,14 +83,13 @@ function WanForm() {
         setState('failed');
         break;
       }
-
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
+    await dispatch(getProfileRequest());
 
     setLoading(false);
   }, [formData]);
 
-  console.log(formData, 8888)
 
   return (
     <Wrapper>
@@ -94,6 +98,8 @@ function WanForm() {
         onClick={handleSetType}
         selectedType={type}
       />
+      <Typography variant="h4" sx={{ marginBottom: 2 }}>{formData.title}</Typography>
+
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2, width: 600, marginBottom: 10 }}

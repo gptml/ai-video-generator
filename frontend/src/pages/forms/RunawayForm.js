@@ -1,13 +1,14 @@
 import React, { useCallback } from 'react';
 import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
-import { TextField, MenuItem, Button, Box, FormControlLabel, Switch } from "@mui/material";
+import { TextField, MenuItem, Button, Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import Video from "../../components/Video";
 import { useDispatch } from "react-redux";
 import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/generateVideo";
+import { getProfileRequest } from "../../store/reducers/users";
 
 const types = [
   {
@@ -29,6 +30,7 @@ function ByteDanceForm() {
   const [formData, setFormData] = React.useState({
     aspectRatio: '16:9',
     model: 'runway',
+    title: 'Runway'
   });
 
   const dispatch = useDispatch();
@@ -61,7 +63,12 @@ function ByteDanceForm() {
     setState('generating');
 
     while (true) {
-      const data = await dispatch(checkStatusRequest({ taskId: payload.taskId, path: 'api/v1/runway/record-detail' }));
+
+      const data = await dispatch(checkStatusRequest({
+        taskId: payload.taskId,
+        path: 'api/v1/runway/record-detail',
+        title: formData.title
+      }));
 
       const response = data.payload?.response;
 
@@ -76,7 +83,7 @@ function ByteDanceForm() {
         setState('failed');
         break;
       }
-
+      await dispatch(getProfileRequest());
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
@@ -90,6 +97,8 @@ function ByteDanceForm() {
         onClick={handleSetType}
         selectedType={type}
       />
+      <Typography variant="h4" sx={{ marginBottom: 2 }}>{formData.title}</Typography>
+
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2, width: 600, marginBottom: 10 }}

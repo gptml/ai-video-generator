@@ -1,7 +1,6 @@
 import { Op } from 'sequelize';
 import Users from '../models/Users.js';
 import HttpErrors from "http-errors";
-import md5 from "md5";
 import jwt from "jsonwebtoken";
 
 const { TOKEN_SECRET } = process.env;
@@ -29,8 +28,8 @@ class UsersController {
         user,
         token,
       });
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -68,6 +67,45 @@ class UsersController {
       next(e);
     }
   }
+
+  static async registerUser(req, res, next) {
+    try {
+      const { name, email, status = 'active', password } = req.body;
+
+      const exists = await Users.findOne({
+        attributes: ['id'],
+        where: {
+          email,
+        },
+      });
+
+      if (exists) {
+        throw HttpErrors(422, {
+          errors: {
+            email: 'Email already exists',
+          }
+        })
+      }
+
+      const user = await Users.create({
+        name,
+        email,
+        status,
+        password: Users.passwordHash(password),
+        role: 'user',
+        tokens: 50,
+      });
+      const token = jwt.sign({ userId: user.id, role: user.role }, TOKEN_SECRET);
+
+      res.json({
+        user,
+        token,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
 
   async createUser(req, res, next) {
     try {
@@ -188,9 +226,9 @@ class UsersController {
         rejectOnEmpty: HttpErrors(404),
       });
 
-      res(null, {
+      res.json({
         user,
-      });
+      })
     } catch (e) {
       next(e);
     }

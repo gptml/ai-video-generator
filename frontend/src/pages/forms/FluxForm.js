@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
-import { TextField, MenuItem, Button, Box, FormControlLabel, Switch, Typography } from "@mui/material";
+import { TextField, MenuItem, Button, Box, Typography } from "@mui/material";
 import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -12,38 +12,44 @@ import { getProfileRequest } from "../../store/reducers/users";
 
 const types = [
   {
-    model: 'FIRST_AND_LAST_FRAMES_2_VIDEO',
-    title: 'image-to-video',
+    model: 'flux-2/flex-image-to-image',
+    title: 'image-to-image',
   },
   {
-    model: 'TEXT_2_VIDEO',
-    title: 'text-to-video',
+    model: 'flux-2/flex-text-to-image',
+    title: 'text-to-image',
   },
 ]
 
-const aspectRatios = ['16:9', '9:16', 'Auto'];
-const modes = ['fun', 'normal', 'spicy'];
+const aspectRatios = [
+  "1:1",
+  "4:3",
+  "3:4",
+  "16:9",
+  "9:16",
+  "3:2",
+  "2:3",
+  "auto"
+];
+const resolutions = ['1K', '2K'];
 
-function ByteDanceForm() {
+function FluxForm() {
 
-  const [type, setType] = React.useState('image-to-video');
+  const [type, setType] = React.useState('image-to-image');
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    generationType: 'FIRST_AND_LAST_FRAMES_2_VIDEO',
-    enableTranslation: true,
-    enableFallback: true,
-    aspectRatio: 'Auto',
-    model: 'veo3',
-    title: 'Veo 3'
+    model: 'flux-2/flex-image-to-image',
+    title: 'Flux',
+    input: { resolution: '1K' }
   });
 
   const dispatch = useDispatch();
 
   const handleSetType = useCallback((type) => {
     setType(type.title);
-    handleChange('generationType', type.model);
+    handleChange('model', type.model);
     setGeneratedContent('')
   }, [])
 
@@ -58,8 +64,7 @@ function ByteDanceForm() {
     setLoading(true);
 
     const { payload } = await dispatch(generateVideoRequest(formData))
-    // const payload = { taskId: '430622386b46e8e3fdeef4097167ad47' }
-
+    // const payload = { taskId: 'bedf681647c3d2dc8feafd6d59073730' }
     if (payload.error) {
       alert(payload.error)
     }
@@ -71,9 +76,14 @@ function ByteDanceForm() {
     setState('generating');
 
     while (true) {
-      const data = await dispatch(checkStatusRequest({ taskId: payload.taskId, path: 'api/v1/veo/record-info', title: formData.title }));
+      const data = await dispatch(checkStatusRequest({
+        taskId: payload.taskId,
+        path: 'api/v1/jobs/recordInfo',
+        title: formData.title
+      }));
 
       const response = data.payload?.response;
+
       if (response?.resultUrls?.length) {
         setGeneratedContent(response.resultUrls[0]);
         setState('done');
@@ -85,9 +95,9 @@ function ByteDanceForm() {
         setState('failed');
         break;
       }
-      await dispatch(getProfileRequest());
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
+    await dispatch(getProfileRequest());
 
     setLoading(false);
   }, [formData]);
@@ -111,31 +121,34 @@ function ByteDanceForm() {
           label="Текст"
           variant="outlined"
           fullWidth
-          onChange={(ev) => handleChange('prompt', ev.target.value)}
+          onChange={(ev) => handleChange('input.prompt', ev.target.value)}
         />
-        {type === 'image-to-video' ? <MuiFileInput
-          label="Файлы"
+        {type === 'image-to-image' ? <MuiFileInput
+          label="Файл"
           variant="outlined"
           fullWidth
           InputProps={{
             inputProps: {
               accept: '.png, .jpeg, .jpg, .webp'
             },
-            startAdornment: <AttachFileIcon />,
+            startAdornment: <AttachFileIcon />
           }}
-          helperText="максимум две фотографии"
           multiple
           onChange={(file) => handleChange('images', file)}
           value={formData.images}
-          getInputText={(file) => file ? file.name : 'Выберите файл'}
+          getInputText={(files) => {
+            if (!files?.length) return "Choose files...";
+            const totalSize = files.reduce((sum, f) => sum + f.size, 0);
+            return `${files.length} files (${(totalSize / 1024 / 1024).toFixed(2)} MB)`;
+          }}
 
         /> : null}
-        {type === 'image-to-video' ? <TextField
+        <TextField
           select
           label="Соотношение сторон"
-          defaultValue="Auto"
+          defaultValue="1:1"
           helperText="Пожалуйста, выберите соотношение сторон"
-          onChange={(ev) => handleChange('aspectRatio', ev.target.value)}
+          onChange={(ev) => handleChange('input.aspect_ratio', ev.target.value)}
 
         >
           {aspectRatios.map((option) => (
@@ -143,37 +156,23 @@ function ByteDanceForm() {
               {option}
             </MenuItem>
           ))}
-        </TextField> : null}
+        </TextField>
 
         <TextField
           select
-          label="Mode"
-          defaultValue="normal"
-          helperText="Please select your mode"
-          onChange={(ev) => handleChange('input.mode', ev.target.value)}
+          label="Разрешение"
+          defaultValue="1K"
+          value={formData.input.resolution}
+          onChange={(ev) => handleChange('input.resolution', ev.target.value)}
 
         >
-          {modes.map((option) => (
+          {resolutions.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
             </MenuItem>
           ))}
         </TextField>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="включить перевод"
-          value={formData.enableTranslation}
-          onChange={() => handleChange('enableTranslation', !formData.enableTranslation)}
-        />
-
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="включить откат"
-          value={formData.enableFallback}
-          onChange={() => handleChange('enableFallback', !formData.enableFallback)}
-        />
-
-        <Button variant="contained" type="submit" loading={loading} disabled={!formData.prompt}>Генерация</Button>
+        <Button variant="contained" type="submit" loading={loading} disabled={!formData.input.prompt}>Генерация</Button>
 
       </Box>
       {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
@@ -181,4 +180,4 @@ function ByteDanceForm() {
   );
 }
 
-export default ByteDanceForm;
+export default FluxForm;

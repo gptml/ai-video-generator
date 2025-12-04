@@ -9,11 +9,12 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { loginRequest } from "../store/reducers/app";
+import { loginRequest } from "../store/reducers/users";
 import _ from "lodash";
 import IconButton from '@mui/material/IconButton';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
+import { useNavigate } from "react-router";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -42,6 +43,7 @@ export default function Login() {
   const [error, setError] = useState('');
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = useCallback((path, value) => {
     setError('');
@@ -117,7 +119,22 @@ export default function Login() {
           <Button type="submit" size="large" sx={{ mt: 2 }} fullWidth variant="contained">
             Войти
           </Button>
+          <Typography
+            variant="body2"
+            textAlign="center"
+            mt={1}
+            sx={{ cursor: "pointer" }}
+          >
+            У вас нет учетной записи?
+            <Button
+              variant="text"
+              onClick={() => navigate('/register')}
+            >
+              Зарегистрироваться
+            </Button>
+          </Typography>
         </Box>
+
       </Card>
     </div>
   );

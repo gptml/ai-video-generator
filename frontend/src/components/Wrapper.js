@@ -4,30 +4,37 @@ import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import LogoutIcon from "@mui/icons-material/Logout";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import TokesCount from "./TokesCount";
+import UserDropdown from "./UserDropdown";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfileRequest } from "../store/reducers/users";
+import { useNavigate } from "react-router";
 
 export default function Wrapper(props) {
 
   const { children, className } = props;
+  const user = useSelector((state) => state.users.user);
 
-  const onLogout = useCallback(() => {
-    localStorage.clear();
-    window.location.reload();
-  }, [])
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(getProfileRequest());
+  }, []);
 
   return (
     <Box sx={{ display: 'flex' }} className={className}>
       <CssBaseline />
       <MuiAppBar position="fixed">
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
-          <Typography variant="h6" noWrap component="div">
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6" noWrap component="div" onClick={() => navigate('/')}>
             AI video generator
           </Typography>
-          <IconButton color="inherit" onClick={onLogout}>
-            <LogoutIcon />
-          </IconButton>
+          <Box sx={{ alignItems: 'center', display: 'flex' }}>
+            <TokesCount />
+            <UserDropdown name={user.name} role={user.role} />
+          </Box>
         </Toolbar>
 
 

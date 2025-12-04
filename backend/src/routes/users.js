@@ -9,10 +9,14 @@ router.post(
   UsersController.login
 );
 
-router.post(
+router.get(
   '/profile',
-  checkRole('admin'),
   UsersController.getProfile
+);
+
+router.post(
+  '/register',
+  UsersController.registerUser
 );
 
 export default router;
