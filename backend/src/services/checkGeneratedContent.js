@@ -3,6 +3,7 @@ import GenerationsHistory from "../models/GenerationsHistory.js";
 import moment from 'moment';
 import Users from "../models/Users.js";
 import Models from "../models/Models.js";
+import HttpErrors from 'http-errors';
 
 const { KIE_API_KEY } = process.env;
 
@@ -21,7 +22,7 @@ export async function checkGeneratedContent(path, tId, userId, title) {
 
   GenerationsHistory.upsert({
     taskId,
-    model,
+    model:model || title,
     state: state || 'generating',
     result: safeJSONParse(resultJson)?.resultUrls[0],
     failMsg,
@@ -70,7 +71,7 @@ export async function checkGeneratedContentVeo(path, tId, userId, title) {
   const { successFlag, taskId, model, response, failMsg, createTime } = data.data;
   GenerationsHistory.upsert({
     taskId,
-    model,
+    model:model || title,
     state: states[successFlag] || 'generating',
     result: response?.resultUrls[0],
     failMsg,

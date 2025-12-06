@@ -230,7 +230,6 @@ class VideoGeneratorController {
 
 
       if (path === 'api/v1/jobs/recordInfo') {
-        console.log(888888888)
         const data = await checkGeneratedContent(path, taskId, userId, title)
         res.json(data)
       }
