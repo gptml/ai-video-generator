@@ -19,6 +19,8 @@ import Settings from "./pages/Settings";
 import FourOImageForm from "./pages/forms/FourOImageForm";
 import NanoBananaForm from "./pages/forms/NanoBananaForm";
 import FluxForm from "./pages/forms/FluxForm";
+import OpenAiWaterMarkRemoveForm from "./pages/forms/OpenAiWaterMarkRemoveForm";
+import QwenImageEditForm from "./pages/forms/QwenImageEditForm";
 
 function App() {
   const token = useSelector(state => state.users.token);
@@ -28,18 +30,20 @@ function App() {
       {token ? (
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/create/bytedance" element={<ByteDanceForm />} />
-          <Route path="/create/grok" element={<GrokForm />} />
-          <Route path="/create/hailuo" element={<HailuoForm />} />
-          <Route path="/create/kling" element={<KlingForm />} />
-          <Route path="/create/openai" element={<OpenAiForm />} />
-          <Route path="/create/wan" element={<WanForm />} />
-          <Route path="/create/veo" element={<VeoForm />} />
-          <Route path="/create/runaway" element={<RunawayForm />} />
-          <Route path="/create/elevenlabs" element={<ElevenLabsForm />} />
-          <Route path="/create/four-o-image" element={<FourOImageForm />} />
-          <Route path="/create/nano-banana" element={<NanoBananaForm />} />
-          <Route path="/create/flux" element={<FluxForm />} />
+          <Route path="/create/bytedance/:modelId" element={<ByteDanceForm />} />
+          <Route path="/create/grok/:modelId" element={<GrokForm />} />
+          <Route path="/create/hailuo/:modelId" element={<HailuoForm />} />
+          <Route path="/create/kling/:modelId" element={<KlingForm />} />
+          <Route path="/create/openai/:modelId" element={<OpenAiForm />} />
+          <Route path="/create/sora-watermark-remove/:modelId" element={<OpenAiWaterMarkRemoveForm />} />
+          <Route path="/create/wan/:modelId" element={<WanForm />} />
+          <Route path="/create/veo/:modelId" element={<VeoForm />} />
+          <Route path="/create/runaway/:modelId" element={<RunawayForm />} />
+          <Route path="/create/elevenlabs/:modelId" element={<ElevenLabsForm />} />
+          <Route path="/create/four-o-image/:modelId" element={<FourOImageForm />} />
+          <Route path="/create/nano-banana/:modelId" element={<NanoBananaForm />} />
+          <Route path="/create/flux/:modelId" element={<FluxForm />} />
+          <Route path="/create/qwen-image-edit/:modelId" element={<QwenImageEditForm />} />
           <Route path="/history" element={<History />} />
           <Route path="/generation-settings" element={<Settings />} />
           <Route path="/*" element={<Home />} />

@@ -10,11 +10,14 @@ class Models extends Model {
       membersList.map(member => ({
         id: member.id,
         title: member.title,
+        subtitle: member.subtitle,
         description: member.description,
         image: member.image,
         path: member.path,
         label: member.label,
         submodels: member.submodels,
+        background: member.background,
+        backgroundType: member.backgroundType,
         token: 1,
       })), {
         ignoreDuplicates: true,
@@ -35,6 +38,15 @@ Models.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
+  subtitle: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  backgroundType: {
+    type: DataTypes.ENUM('image', 'video'),
+    defaultValue: 'image',
+    allowNull: false,
+  },
   description: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -44,6 +56,10 @@ Models.init({
     allowNull: false,
   },
   path: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  background: {
     type: DataTypes.STRING,
     allowNull: false,
   },

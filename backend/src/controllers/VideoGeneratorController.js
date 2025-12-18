@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { GenerationsHistory, Models } from "../models/index.js";
 import Users from "../models/Users.js";
+import HttpErrors from 'http-errors';
 
 const { KIE_API_KEY } = process.env;
 
@@ -184,9 +185,9 @@ class VideoGeneratorController {
 
       if (files) {
         files.map(file => {
-        const targetPath = path.resolve('src/public', file.filename);
-        fs.copyFileSync(file.path, targetPath);
-        fs.unlinkSync(file.path);
+          const targetPath = path.resolve('src/public', file.filename);
+          fs.copyFileSync(file.path, targetPath);
+          fs.unlinkSync(file.path);
         })
       }
 
@@ -195,8 +196,58 @@ class VideoGeneratorController {
         input: {
           ...input,
           image_url: files[0] && !(model === 'nano-banana-pro' || model === 'flux-2/flex-image-to-image') ? `${req.protocol}://${req.headers.host}/public/${files[0].filename}` : undefined,
-          image_input: files[0] && model === 'nano-banana-pro' ? files.map(f =>`${req.protocol}://${req.headers.host}/public/${f.filename}`) : undefined,
-          input_urls: files[0] && model === 'flux-2/flex-image-to-image' ? files.map(f =>`${req.protocol}://${req.headers.host}/public/${f.filename}`) : undefined,
+          image_input: files[0] && model === 'nano-banana-pro' ? files.map(f => `${req.protocol}://${req.headers.host}/public/${f.filename}`) : undefined,
+          input_urls: files[0] && model === 'flux-2/flex-image-to-image' ? files.map(f => `${req.protocol}://${req.headers.host}/public/${f.filename}`) : undefined,
+        },
+      }, {
+        headers: {
+          'Authorization': `Bearer ${KIE_API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (data.code === 200) {
+
+        console.log('Task submitted:', data);
+        res.json({
+          taskId: data.data.taskId
+        })
+      } else {
+        console.error('Request failed:', data.msg || 'Unknown error');
+        res.json({
+          error: data.msg
+
+        })
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async generateOtherModelVideo(req, res, next) {
+    try {
+      const { input, title } = req.body;
+      const { model } = req.params;
+      const { file } = req;
+
+      const { userId } = req.auth;
+      const user = Users.findOne({ id: userId });
+
+      const { token } = await Models.findOne({ where: { title } });
+
+      if (user.tokens < token) {
+        res.status(403).send({ tokens: "недостаточно токенов" });
+      }
+
+      const targetPath = path.resolve('src/public', file.filename);
+      fs.copyFileSync(file.path, targetPath);
+      fs.unlinkSync(file.path);
+
+      const { data } = await axios.post('https://api.kie.ai/api/v1/jobs/createTask', {
+        model: model.replace('_', '/'),
+        input: {
+          ...input,
+          video_url: `${req.protocol}://${req.headers.host}/public/${file?.filename}`,
         },
       }, {
         headers: {
@@ -251,6 +302,22 @@ class VideoGeneratorController {
 
       res.json({
         models,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  static async getSingleModel(req, res, next) {
+    try {
+      const { id } = req.query;
+      const model = await Models.findOne({
+        where: { id },
+        rejectOnEmpty: HttpErrors(404, 'Not found'),
+      });
+
+      res.json({
+        model,
       });
     } catch (e) {
       next(e);

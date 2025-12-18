@@ -16,14 +16,14 @@ export const slice = createSlice({
       state.token = token;
       state.user = user;
     })
-    builder.addCase(loginRequest.fulfilled, (state, action) => {
+    .addCase(loginRequest.fulfilled, (state, action) => {
       const { token, user } = action.payload;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       state.token = token;
       state.user = user;
     })
-    builder.addCase(getProfileRequest.fulfilled, (state, action) => {
+    .addCase(getProfileRequest.fulfilled, (state, action) => {
       const { user } = action.payload;
       localStorage.setItem('user', JSON.stringify(user));
       state.user = user;

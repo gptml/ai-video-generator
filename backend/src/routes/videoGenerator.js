@@ -29,6 +29,23 @@ router.post(
   VideoGeneratorController.generateOtherModel
 );
 
+
+router.post(
+  '/generate/video/:model',
+  upload([
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/quicktime',
+    'video/x-msvideo',
+    'video/x-ms-wmv',
+    'video/x-matroska',
+    'video/mpeg',
+  ]).single('video'),
+  VideoGeneratorController.generateOtherModelVideo
+);
+
+
 router.get(
   '/check-status',
   VideoGeneratorController.checkContent
@@ -43,6 +60,11 @@ router.get(
 router.get(
   '/history',
   VideoGeneratorController.generationHistory
+);
+
+router.get(
+  '/single-model',
+  VideoGeneratorController.getSingleModel
 );
 
 router.post(

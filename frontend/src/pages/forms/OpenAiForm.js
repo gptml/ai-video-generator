@@ -15,7 +15,7 @@ const types = [
     model: 'sora-2-pro-image-to-video',
     title: 'image-to-video',
   },
-  {
+  { 
     model: 'sora-2-pro-text-to-video',
     title: 'text-to-video',
   },

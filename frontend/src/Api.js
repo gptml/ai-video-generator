@@ -42,6 +42,10 @@ export default class Api {
     return api.get('/video-generator/history', { params: { page } })
   }
 
+  static getSingleModel(id) {
+    return api.get('/video-generator/single-model', { params: { id } })
+  }
+
   static changeTokenCount(data) {
     return api.post('/video-generator/change-token-count', data)
   }

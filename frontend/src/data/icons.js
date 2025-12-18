@@ -10,3 +10,5 @@ export { default as elevenlabsIcon } from '../assets/icons/elevenlabs.svg';
 export { default as fourOIcon } from '../assets/icons/fourO.png';
 export { default as nanoBananaIcon } from '../assets/icons/nano.webp';
 export { default as fluxIcon } from '../assets/icons/flux.webp';
+export { default as qwenIcon } from '../assets/icons/qwen.png';
+export { default as topazIcon } from '../assets/icons/topaz.svg';

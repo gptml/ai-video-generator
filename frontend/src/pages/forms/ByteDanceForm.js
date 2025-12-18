@@ -1,14 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
 import { TextField, MenuItem, Button, Box, Typography } from "@mui/material";
 import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
-import { useDispatch } from "react-redux";
-import { checkStatusRequest, generateVideoRequest } from "../../store/reducers/generateVideo";
+import { useDispatch, useSelector } from "react-redux";
+import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
 import Video from "../../components/Video";
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { getProfileRequest } from "../../store/reducers/users";
+import { useParams } from "react-router";
+import Textarea from "../../components/form/Textarea";
+import File from "../../components/form/File";
 
 const types = [{
   model: 'bytedance/v1-pro-fast-image-to-video',
@@ -26,15 +29,21 @@ function ByteDanceForm() {
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
     model: 'bytedance/v1-pro-fast-image-to-video',
-    title: 'ByteDance',
     input: {
       duration: '5',
       resolution: '720p',
     }
   });
 
+  const model = useSelector(state => state.generateVideo.singleModel);
 
+  console.log(model, 999)
   const dispatch = useDispatch();
+  const { modelId } = useParams();
+
+  useEffect(() => {
+    dispatch(getSingleModelRequest(modelId))
+  }, [])
 
 
   const handleSetType = useCallback((type) => {
@@ -67,7 +76,7 @@ function ByteDanceForm() {
       const data = await dispatch(checkStatusRequest({
         taskId: payload.taskId,
         path: 'api/v1/jobs/recordInfo',
-        title: formData.title
+        title: model.title
       }));
 
       const response = data.payload?.response;
@@ -88,7 +97,7 @@ function ByteDanceForm() {
     await dispatch(getProfileRequest());
 
     setLoading(false);
-  }, [formData]);
+  }, [formData, model]);
 
 
   return (
@@ -98,20 +107,22 @@ function ByteDanceForm() {
         onClick={handleSetType}
         selectedType={type}
       />
-      <Typography variant="h4" sx={{ marginBottom: 2 }}>{formData.title}</Typography>
-
+      <Typography variant="h4" sx={{ marginBottom: 2 }}>{model.title}</Typography>
+      <p>{model.description}</p>
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2, width: 600, marginBottom: 10 }}
         onSubmit={handleSubmit}
       >
-        <TextField
-          id="prompt"
+        <Textarea
           label="Текст"
-          variant="outlined"
-          fullWidth
+          required
           onChange={(ev) => handleChange('input.prompt', ev.target.value)}
+          value={formData.input.prompt}
+          placeholder="введите ваше сообщение"
+          hint="Текстовая подсказка, использованная для создания видео."
         />
+        <File />
         <MuiFileInput
           label="Файл"
           variant="outlined"

@@ -1,77 +1,86 @@
 [
   {
     "id": 9,
-    "title": "ElevenLabs",
+    "title": "Elevenlabs Text to Speech",
+    "subtitle": "Elevenlabs",
     "description": "Выведите свой контент на новый уровень с помощью API ElevenLabs для преобразования текста в речь, обеспечивая реалистичное звучание, которое захватывает аудиторию. На Kie.ai вы можете легко получить доступ к API ElevenLabs TTS для подкастов, приложений и многого другого — без навыков программирования.",
     "image": "elevenlabsIcon",
-    "path": "/create/elevenlabs",
+    "path": "/create/elevenlabs-text-speech",
     "label": "Озвучка",
-    "submodels": [
-      {
-        "model": "kling/v2-5-turbo-image-to-video-pro",
-        "title": "image-to-video"
-      },
-      {
-        "model": "kling/v2-5-turbo-text-to-video-pro",
-        "title": "text-to-video"
-      }
-    ]
+    "background": "elevenlabsBack",
+    "backgroundType": "image"
   },
   {
     "id": 1,
     "title": "Grok",
     "description": "Grok Imagine — это многомодальная модель генерации изображений и видео от xAI, которая преобразует текст или изображения в короткие визуальные результаты с последовательным движением и синхронизированным звуком.",
     "image": "grokIcon",
-    "path": "/create/grok"
+    "path": "/create/grok",
+    "background": "grokBack",
+    "backgroundType": "video"
   },
   {
     "id": 2,
     "title": "ByteDance",
     "description": "Модель генерации видео на основе ИИ от ByteDance, которая наследует качество ядра Seedance 1.0 Pro, обеспечивает в 3 раза более быстрый рендеринг, создавая последовательные клипы 1080p со стабильным движением и эффективной вычислительной производительностью.",
     "image": "bytedanceIcon",
-    "path": "/create/bytedance"
+    "path": "/create/bytedance",
+    "background": "seedanceBack",
+    "backgroundType": "video"
   },
   {
     "id": 3,
     "title": "Hailuo",
     "description": "Hailuo 2.3 — это высокоточная модель видеогенерации на базе искусственного интеллекта от MiniMax, разработанная для создания реалистичных движений, выразительных персонажей и кинематографических визуальных эффектов. Она поддерживает преобразование текста в видео и изображений в видео, обеспечивая стабильную обработку сложных движений и детальной мимики.",
     "image": "hailuoIcon",
-    "path": "/create/hailuo"
+    "path": "/create/hailuo",
+    "background": "hailuoBack",
+    "backgroundType": "video"
   },
   {
     "id": 4,
     "title": "OpenAI",
     "description": "Усовершенствованная видеомодель искусственного интеллекта OpenAI для структурированной генерации видео, поддерживающая многосценарную последовательность, визуальную согласованность и управление выводом каждые 25 секунд.",
     "image": "openaiIcon",
-    "path": "/create/openai"
+    "path": "/create/openai",
+    "background": "soraBack",
+    "backgroundType": "image"
   },
   {
     "id": 5,
     "title": "Veo 3",
     "description": "Google Veo 3 — это модель видеопроизводства нового поколения на базе искусственного интеллекта, поддерживающая преобразование текста в видео и изображений в видео, создавая высококачественные кинематографические визуальные эффекты.",
     "image": "googleVeoIcon",
-    "path": "/create/veo"
+    "path": "/create/veo",
+    "background": "googleVeoBack",
+    "backgroundType": "video"
   },
   {
     "id": 6,
     "title": "Kling 2.5",
     "description": "Kling 2.5 Turbo — новейшая модель видеогенерации на основе искусственного интеллекта, отличающаяся точной синхронизацией, плавными движениями, единообразными стилями и реалистичной симуляцией физики.",
     "image": "klingaiIcon",
-    "path": "/create/kling"
+    "path": "/create/kling",
+    "background": "klingai25Back",
+    "backgroundType": "video"
   },
   {
     "id": 7,
     "title": "Wan",
     "description": "API Wan 2.5 от Alibaba создан для кинематографической генерации видео и поддерживает преобразование текста в видео и изображений в видео с синхронизацией визуальных эффектов и звука.",
     "image": "vanIcon",
-    "path": "/create/wan"
+    "path": "/create/wan",
+    "background": "van25Back",
+    "backgroundType": "video"
   },
   {
     "id": 8,
     "title": "Runway",
     "description": "Создавайте высококачественные видео из текста и изображений с помощью Runway API. Используйте его для быстрой интеграции и получения API-ключа Runway.",
     "image": "runawayIcon",
-    "path": "/create/runaway"
+    "path": "/create/runaway",
+    "background": "runawayBack",
+    "backgroundType": "image"
   },
   {
     "id": 10,
@@ -79,7 +88,9 @@
     "description": "API 4o Image, работающий на основе усовершенствованной модели GPT-4o, предоставляет высококачественные услуги по генерации изображений с использованием искусственного интеллекта. Наш API удовлетворит все ваши творческие потребности, будь то генерация текста в изображение, редактирование изображений или создание вариантов изображений.",
     "image": "fourOIcon",
     "label": "Генерация изображений",
-    "path": "/create/four-o-image"
+    "path": "/create/four-o-image",
+    "background": "fourOBack",
+    "backgroundType": "image"
   },
   {
     "id": 11,
@@ -87,7 +98,9 @@
     "description": "Nano Banana Pro от Google DeepMind обеспечивает более четкие изображения 2K, интеллектуальное масштабирование 4K, улучшенную визуализацию текста и повышенную согласованность символов, предлагая значительный скачок в визуальном качестве для творческих и управляемых API рабочих процессов.",
     "image": "nanoBananaIcon",
     "label": "Генерация изображений",
-    "path": "/create/nano-banana"
+    "path": "/create/nano-banana",
+    "background": "nanoBananaProBack",
+    "backgroundType": "image"
   },
   {
     "id": 12,
@@ -95,6 +108,260 @@
     "description": "Flux 2 — это усовершенствованная модель генерации изображений от Black Forest Labs, которая обеспечивает фотореалистичную детализацию, высокую согласованность по нескольким источникам и точную визуализацию текста с гибким управлением.",
     "image": "fluxIcon",
     "label": "Генерация изображений",
-    "path": "/create/flux"
+    "path": "/create/flux",
+    "background": "flux2Back",
+    "backgroundType": "image"
+  },
+  {
+    "id": 13,
+    "title": "Seedream 4.5",
+    "subtitle": "ByteDance",
+    "description": "Seedream 4.5 — это усовершенствованная модель обработки изображений от Bytedance, предназначенная для генерации 4K-видео, точного редактирования и стабильного вывода нескольких изображений.",
+    "image": "bytedanceIcon",
+    "label": "Генерация изображений",
+    "path": "/create/seedream",
+    "background": "seedream45Back",
+    "backgroundType": "image"
+  },
+  {
+    "id": 14,
+    "title": "Z-Image",
+    "subtitle": "Qwen",
+    "description": "Z-Image — это эффективная модель генерации изображений от Tongyi-MAI, обеспечивающая фотореалистичный результат, высокую производительность в режиме Turbo и точное отображение двуязычного текста с глубоким семантическим пониманием.",
+    "image": "qwenIcon",
+    "label": "Генерация изображений",
+    "path": "/create/z-image",
+    "background": "zImageBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 15,
+    "title": "Seedance 1.0 Pro Fast",
+    "subtitle": "ByteDance",
+    "description": "Модель генерации видео на основе искусственного интеллекта от ByteDance, унаследовавшая основные качества Seedance 1.0 Pro, обеспечивает в 3 раза более быструю обработку, создавая связные видеоролики в разрешении 1080p со стабильным движением и эффективной вычислительной производительностью.",
+    "image": "bytedanceIcon",
+    "path": "/create/seedance-pro-fast",
+    "background": "seedance10Back",
+    "backgroundType": "video"
+  },
+  {
+    "id": 16,
+    "title": "Sora 2 Pro Storyboard",
+    "subtitle": "OpenAI",
+    "description": "Усовершенствованная модель видеоанализа на основе искусственного интеллекта от OpenAI для генерации структурированного видео, поддерживающая многосценовую последовательность, визуальную согласованность и управление выходным временем в 25 секунд.",
+    "image": "openaiIcon",
+    "path": "/create/sora-pro-storyboard",
+    "background": "sora2ProStoryBack",
+    "backgroundType": "video"
+  },
+  {
+    "id": 17,
+    "title": "Sora 2 Pro",
+    "subtitle": "OpenAI",
+    "description": "Усовершенствованная версия модели Sora 2 от OpenAI, обеспечивающая более реалистичное движение, улучшенную физику и синхронизированный звук, а также генерацию видеоконтента (текста и изображения) до 15 секунд в формате 1080p HD.",
+    "image": "openaiIcon",
+    "path": "/create/sora-pro",
+    "background": "sora2ProBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 18,
+    "title": "Sora 2 Watermark Remove API",
+    "subtitle": "OpenAI",
+    "description": "API для удаления водяных знаков в Sora 2 использует обнаружение объектов с помощью ИИ и отслеживание движения для удаления динамических водяных знаков из видео Sora 2, сохраняя при этом плавность и естественность кадров. Исходный URL-адрес видео должен быть общедоступным, а время обработки обычно составляет 1–3 секунды.",
+    "image": "openaiIcon",
+    "path": "/create/sora-watermark-remove",
+    "background": "sora2WatermarkBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 20,
+    "title": "Flux Kontext",
+    "subtitle": "Black Forest Labs",
+    "description": "В мире, где визуальные элементы определяют вовлеченность аудитории, API FLUX.1 Kontext на платформе Kie.ai позволяет редактировать изображения как никогда раньше. Используйте передовые технологии искусственного интеллекта для преобразования фотографий с помощью простых текстовых команд, получая профессиональные результаты, которые экономят время и повышают креативность. Независимо от того, оптимизируете ли вы объявления в интернет-магазинах или создаете маркетинговые шедевры, API FLUX.1 Kontext на Kie.ai — это ваш путь к эффективным и высококачественным инновациям в области обработки изображений.",
+    "image": "fluxIcon",
+    "path": "/create/flux-kontext",
+    "background": "fluxKontextBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 21,
+    "title": "Topaz Image Upscale",
+    "subtitle": "Topaz",
+    "description": "Topaz Labs Image Upscale — это модель улучшения изображений на основе искусственного интеллекта, которая повышает разрешение и восстанавливает детали за счет высококачественного масштабирования, естественной реконструкции текстуры и улучшения четкости изображений низкого качества.",
+    "image": "topazIcon",
+    "path": "/create/topaz-image",
+    "background": "topazImageUpscaleBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 22,
+    "title": "Wan 2.2 Animate",
+    "subtitle": "Wan",
+    "description": "API Wan 2.2 Animate от Tongyi Lab компании Alibaba генерирует реалистичные видеоролики с персонажами, включающие движение, выражения лиц и освещение. Он поддерживает режим анимации для управления статическими изображениями и режим замены для плавной замены персонажей в существующих клипах.",
+    "image": "vanIcon",
+    "path": "/create/van-animate",
+    "background": "wan22Back",
+    "backgroundType": "video"
+  },
+  {
+    "id": 23,
+    "title": "Hailuo 02",
+    "subtitle": "Hailuo",
+    "description": "Hailuo 02 API — это передовая модель генерации видео на основе искусственного интеллекта от Minimax, которая преобразует текст или изображения в короткие кинематографические ролики. Она поддерживает высококачественный вывод до 1080p, реалистичное движение, моделирование физики и точное управление камерой.",
+    "image": "hailuoIcon",
+    "path": "/create/hailuo-02",
+    "background": "hailuo02Back",
+    "backgroundType": "video"
+  },
+  {
+    "id": 24,
+    "title": "Topaz Video Upscaler",
+    "subtitle": "Topaz",
+    "description": "API Topaz Video Upscaler обеспечивает профессиональное улучшение видео с помощью искусственного интеллекта, восстанавливая детали, уменьшая шум и обеспечивая высококачественное масштабирование до 1080p или 4K.",
+    "image": "topazIcon",
+    "path": "/create/topaz-video",
+    "background": "topazVideoUpscaleBack",
+    "backgroundType": "video"
+  },
+  {
+    "id": 25,
+    "title": "Kling AI Avatar",
+    "subtitle": "Kling",
+    "description": "API Kling AI Avtar генерирует реалистичные говорящие аватары на основе фотографий и аудио. Благодаря удобному управлению эмоциями, выражениями лица и темпом речи, он обеспечивает точную синхронизацию губ и единообразный внешний вид для образовательных учреждений, маркетинга, социальных сетей и виртуальных инфлюенсеров.",
+    "image": "klingIcon",
+    "path": "/create/kling-avatar",
+    "background": "klingAIAvatarBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 27,
+    "title": "Infinitalk API-AI lip-sync generator",
+    "subtitle": "Infinitalk",
+    "description": "InfiniteTalk API — это продвинутый API для синхронизации губ в видео, разработанный компанией MeiGen-AI. Он преобразует изображения или текст со звуком в естественные говорящие аватары, обеспечивая точную синхронизацию губ, выразительные движения лица и даже создание видео бесконечной длины.",
+    "image": "",
+    "path": "/create/infinitalk",
+    "background": "infinitalkLipSyncBack",
+    "backgroundType": "video"
+  },
+  {
+    "id": 28,
+    "title": "Recraft Remove Background",
+    "subtitle": "Recraft",
+    "description": "API Remove Background, разработанный компанией Recraft AI, точно отделяет объекты от любого фона и обеспечивает чистые, прозрачные результаты — оптимизированные для бесшовной интеграции в веб-сайты, платформы электронной коммерции и творческие рабочие процессы.",
+    "image": "",
+    "path": "/create/recraft",
+    "background": "recraftRemoveBackgroundBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 29,
+    "title": "Recraft Crisp Upscale",
+    "subtitle": "Recraft",
+    "description": "Превратите размытые фотографии в кристально чистые шедевры с помощью API Recraft Crisp Upscale. Этот инструмент, являющийся лучшим бесплатным инструментом для масштабирования изображений, использует передовые технологии искусственного интеллекта для получения результатов профессионального уровня без каких-либо затрат. Независимо от того, являетесь ли вы дизайнером, маркетологом или любителем, оцените возможности масштабирования изображений, которые делают бесплатное масштабирование изображений невероятно простым. Доступный эксклюзивно на Kie.ai, это лучший онлайн-инструмент для масштабирования изображений, совершенно бесплатный для всех, кто хочет бесплатно повысить разрешение изображения.",
+    "image": "",
+    "path": "/create/recraft-upscale",
+    "background": "recraftCrispUpscaleBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 30,
+    "title": "Ideogram V3 Reframe Image",
+    "subtitle": "Ideogram",
+    "description": "Ideogram V3 Reframe is a specialized image-to-image model built on Ideogram 3.0, designed to intelligently extend and adapt images across diverse aspect ratios and resolutions. Leveraging advanced AI outpainting, it preserves visual consistency while enabling creative reframing for digital, print, and video content.",
+    "image": "",
+    "path": "/create/ideogram",
+    "background": "ideogramV3Back",
+    "backgroundType": "image"
+  },
+  {
+    "id": 31,
+    "title": "Elevenlabs Audio Isolation",
+    "subtitle": "Elevenlabs",
+    "description": "API ElevenLabs Audio Isolation использует искусственный интеллект для удаления фонового шума, музыки и помех, сохраняя при этом четкую и естественную речь. Он обеспечивает высокоточную изоляцию речи, что делает его идеальным для подкастов, интервью, прямых трансляций и профессиональной записи.",
+    "image": "",
+    "path": "/create/elevenlabs-audio-isolation",
+    "background": "elevenlabsAudioIsolationBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 32,
+    "title": "Elevenlabs Sound Effect",
+    "subtitle": "Elevenlabs",
+    "description": "API Elevenlabs Sound Effect V2 — это улучшенная версия модели звуковых эффектов Elevenlabs, выпущенная в сентябре 2025 года. Она поддерживает клипы длительностью более 20 секунд, бесшовное зацикливание и аудио с частотой 48 кГц, что делает генерацию звуковых эффектов из текста более точной и готовой к использованию в производстве.",
+    "image": "",
+    "path": "/create/elevenlabs-sound-effect",
+    "background": "elevenlabsSoundEffectBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 33,
+    "title": "Elevenlabs Speech to Text",
+    "subtitle": "Elevenlabs",
+    "description": "API ElevenLabs для преобразования речи в текст, работающий на основе модели Scribe v1, обеспечивает современную транскрипцию с высочайшей точностью, многоязычной поддержкой и расширенными функциями, такими как диаризация говорящих и маркировка аудиособытий.",
+    "image": "",
+    "path": "/create/elevenlabs-speech-text",
+    "background": "elevenlabsSpeechToTextBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 34,
+    "title": "Wan 2.2 A14B Speech to Video Turbo",
+    "subtitle": "Wan",
+    "description": "Wan 2.2 A14B Turbo API Speech to Video — это революционная модель искусственного интеллекта, которая преобразует статичные изображения и аудиоклипы в динамичные, выразительные видеоролики, идеально подходящие для создателей контента, маркетологов и преподавателей. Уже доступно на Kie.ai. Оцените бесшовную интеграцию и непревзойденное качество создания видео.",
+    "image": "",
+    "path": "/create/wan-speech-to-video",
+    "background": "wan222Back",
+    "backgroundType": "video"
+  },
+  {
+    "id": 35,
+    "title": "Seedream",
+    "subtitle": "ByteDance",
+    "description": "API Seedream 3.0 — это новейший API от ByteDance для преобразования текста в изображения, разработанный для работы с разрешением 2K, более быстрой генерации и точной двуязычной отрисовки текста. По сравнению с Seedream 2.0, API Seedream v3 обеспечивает более высокое качество, кинематографическую эстетику и типографику дизайнерского уровня.",
+    "image": "",
+    "path": "/create/seedream",
+    "background": "seedream30Back",
+    "backgroundType": "image"
+  },
+  {
+    "id": 36,
+    "title": "Qwen Image",
+    "subtitle": "Qwen",
+    "description": "API Qwen для работы с изображениями позволяет создателям контента, разработчикам и компаниям легко создавать и редактировать фотореалистичные изображения. Независимо от того, разрабатываете ли вы сложные дизайны или дорабатываете существующие визуальные материалы, этот мощный API Qwen легко интегрируется в ваш рабочий процесс, предоставляя многоязычную отрисовку текста и расширенные возможности редактирования, не уступающие лучшим моделям.",
+    "image": "",
+    "path": "/create/qwen-image",
+    "background": "qwenImageBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 37,
+    "title": "NanoBanana-Gemini 2.5 Flash Image Preview",
+    "subtitle": "Google",
+    "description": "Gemini 3 Image Preview (также известный как Nano Banana) — это продвинутая модель искусственного интеллекта, превосходно справляющаяся с генерацией и редактированием изображений на основе естественного языка. Она создает гиперреалистичные, учитывающие физические законы изображения с плавными преобразованиями стиля.",
+    "image": "",
+    "path": "/create/nano-banana-image-preview",
+    "background": "nanoBananaBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 38,
+    "title": "Suno API",
+    "subtitle": "Suno",
+    "description": "",
+    "image": "",
+    "path": "/create/suno",
+    "background": "sunoApiBack",
+    "backgroundType": "image"
+  },
+  {
+    "id": 39,
+    "title": "Qwen Image Edit",
+    "subtitle": "Qwen",
+    "description": "Qwen-Image-Edit — это модель редактирования изображений с открытым исходным кодом, основанная на Qwen-Image, поддерживающая семантическую и визуальную обработку с точными, визуально согласованными результатами. Она также поддерживает редактирование двуязычного (китайского и английского) текста с сохранением шрифта, размера и стиля, что делает её универсальным инструментом для сложной обработки визуального контента.",
+    "image": "",
+    "path": "/create/qwen-image-edit",
+    "background": "qwenImageEditBack",
+    "backgroundType": "image"
   }
 ]

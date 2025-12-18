@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import Wrapper from "../components/Wrapper";
 import ModelCard from "../components/ModelCard";
-import { Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllModelsRequest } from "../store/reducers/generateVideo";
+import Carusel from "../components/Carusel";
 
 
 function Home() {
@@ -19,19 +19,24 @@ function Home() {
 
   return (
     <Wrapper>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+      <Carusel models={allModels.slice(0, 10)} />
+      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {allModels.map(model => (
-            <ModelCard
-              key={model.id}
-              path={model.path}
-              title={model.title}
-              description={model.description}
-              image={model.image}
-              label={model.label}
-              token={model.token}
-            />
+          <ModelCard
+            key={model.id}
+            id={model.id}
+            path={model.path}
+            title={model.title}
+            subtitle={model.subtitle}
+            description={model.description}
+            background={model.background}
+            backgroundType={model.backgroundType}
+            image={model.image}
+            label={model.label}
+            token={model.token}
+          />
         ))}
-      </Box>
+      </div>
     </Wrapper>
   );
 }

@@ -8,27 +8,31 @@ export const slice = createSlice({
     allModels: [],
     generationHistory: [],
     totalPages: 0,
+    singleModel: {}
   },
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(generateVideoRequest.fulfilled, (state, action) => {
       console.log(action.payload);
     })
-    builder.addCase(getAllModelsRequest.fulfilled, (state, action) => {
-      state.allModels = action.payload.models
-    })
-    builder.addCase(getGenerationHistoryRequest.fulfilled, (state, action) => {
-      state.generationHistory = action.payload.history;
-      state.totalPages = action.payload.totalPages;
-    })
-    builder.addCase(changeTokenCount, (state, action) => {
-      state.allModels = [...state.allModels].map(m => {
-        if (m.id === action.payload.id) {
-          m.token = action.payload.token;
-        }
-        return m;
+      .addCase(getAllModelsRequest.fulfilled, (state, action) => {
+        state.allModels = action.payload.models
       })
-    })
+      .addCase(getSingleModelRequest.fulfilled, (state, action) => {
+        state.singleModel = action.payload.model
+      })
+      .addCase(getGenerationHistoryRequest.fulfilled, (state, action) => {
+        state.generationHistory = action.payload.history;
+        state.totalPages = action.payload.totalPages;
+      })
+      .addCase(changeTokenCount, (state, action) => {
+        state.allModels = [...state.allModels].map(m => {
+          if (m.id === action.payload.id) {
+            m.token = action.payload.token;
+          }
+          return m;
+        })
+      })
   }
 })
 
@@ -69,6 +73,17 @@ export const getAllModelsRequest = createAsyncThunk('generateVideo/getAllModelsR
 export const getGenerationHistoryRequest = createAsyncThunk('generateVideo/getGenerationHistoryRequest', async (arg, thunkAPI) => {
   try {
     const { data } = await Api.getGenerationHistory(arg)
+    return data
+  } catch (e) {
+    console.log(e)
+    return thunkAPI.rejectWithValue(e.response?.data);
+  }
+
+})
+
+export const getSingleModelRequest = createAsyncThunk('generateVideo/getSingleModelRequest', async (arg, thunkAPI) => {
+  try {
+    const { data } = await Api.getSingleModel(arg)
     return data
   } catch (e) {
     console.log(e)

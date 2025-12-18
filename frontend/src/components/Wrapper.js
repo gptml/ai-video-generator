@@ -10,6 +10,7 @@ import UserDropdown from "./UserDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfileRequest } from "../store/reducers/users";
 import { useNavigate } from "react-router";
+import Header from "./Header";
 
 export default function Wrapper(props) {
 
@@ -24,25 +25,13 @@ export default function Wrapper(props) {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex' }} className={className}>
+    <>
       <CssBaseline />
-      <MuiAppBar position="fixed">
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" noWrap component="div" onClick={() => navigate('/')}>
-            AI video generator
-          </Typography>
-          <Box sx={{ alignItems: 'center', display: 'flex' }}>
-            <TokesCount />
-            <UserDropdown name={user.name} role={user.role} />
-          </Box>
-        </Toolbar>
-
-
-      </MuiAppBar>
+      <Header/>
 
       <Box component="main" sx={{ flexGrow: 1, px: 3, py: 10 }}>
         {children}
       </Box>
-    </Box>
+    </>
   );
 }
