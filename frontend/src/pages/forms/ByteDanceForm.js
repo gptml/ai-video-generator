@@ -122,7 +122,7 @@ function ByteDanceForm() {
           placeholder="введите ваше сообщение"
           hint="Текстовая подсказка, использованная для создания видео."
         />
-    
+
         <MuiFileInput
           label="Файл"
           variant="outlined"
