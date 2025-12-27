@@ -19,4 +19,14 @@ router.post(
   UsersController.registerUser
 );
 
+router.get(
+  '/list',
+  UsersController.getUsersList
+);
+
+router.post(
+  '/update-token',
+  UsersController.changeUserToken
+);
+
 export default router;

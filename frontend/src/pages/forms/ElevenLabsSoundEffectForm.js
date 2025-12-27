@@ -1,28 +1,34 @@
 import React, { useCallback, useEffect } from 'react';
 import Wrapper from "../../components/Wrapper";
+import { TextField, MenuItem, Button, Box, Typography } from "@mui/material";
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
-import Video from "../../components/Video";
+import Audio from "../../components/Audio";
 import { getProfileRequest } from "../../store/reducers/users";
 import File from "../../components/form/File";
-import Image from "../../components/Image";
+import Switcher from "../../components/form/Switcher";
 import { useParams } from "react-router";
+import Textarea from "../../components/form/Textarea";
+import Input from "../../components/form/Input";
 
-function OpenAiWaterMarkRemoveForm() {
+
+function ElevenLabsSoundEffectForm() {
 
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'sora-watermark-remover',
-    title: 'Sora 2 Watermark Remove',
-    input: {}
+    model: 'elevenlabs/sound-effect-v2',
+    title: 'ElevenLabs Sound Effect',
+    input: {
+      loop: false,
+      diarize: false,
+    }
   });
 
 
   const dispatch = useDispatch();
-
   const model = useSelector(state => state.generateVideo.singleModel);
 
   const { modelId } = useParams();
@@ -30,6 +36,7 @@ function OpenAiWaterMarkRemoveForm() {
   useEffect(() => {
     dispatch(getSingleModelRequest(modelId))
   }, [])
+
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
     setFormData({ ...formData });
@@ -79,26 +86,40 @@ function OpenAiWaterMarkRemoveForm() {
     setLoading(false);
   }, [formData]);
 
-
   return (
     <Wrapper>
-        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
         <div className="mr-20">
           <p className="text-xl">{model.title}</p>
           <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
           <form className="modelForm" onSubmit={handleSubmit}>
-
-            <File
-              value={formData.input.video_url}
-              onChange={(ev) => {
-                const file = ev.target.files[0];
-                file.uri = URL.createObjectURL(file);
-                handleChange('input.video_url', file)
-              }}
-              onFileDelete={() => handleChange('input.video_url', null)}
-              accept="video/*"
+            <Textarea
+              label="Текст"
+              required
+              onChange={(ev) => handleChange('input.text', ev.target.value)}
+              value={formData.input.prompt}
+              placeholder="введите ваше сообщение"
+              hint="Текстовая подсказка, использованная для создания видео."
             />
 
+            <Input
+              max={22}
+              label="Duration in seconds (0.5-22). If None, optimal duration will be determined from prompt"
+              type="number"
+              onChange={(ev) => handleChange('input.duration_seconds', ev.target.value)}
+            />
+
+            <Switcher
+              enabled={formData.loop}
+              onChange={() => handleChange('loop', !formData.loop)}
+              label="Стоит ли создавать звуковой эффект, который плавно зацикливается?"
+            />
+
+            <Switcher
+              enabled={formData.diarize}
+              onChange={() => handleChange('tag_audio_events', !formData.diarize)}
+              label="Стоит ли указывать, кто говорит?"
+            />
 
             <button
               disabled={loading}
@@ -131,13 +152,11 @@ function OpenAiWaterMarkRemoveForm() {
             </button>
           </form>
         </div>
-
-        {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
       </div>
-
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
+      // todo generatedContent is text
+      {generatedContent ? <Audio src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
 
-export default OpenAiWaterMarkRemoveForm;
+export default ElevenLabsSoundEffectForm;

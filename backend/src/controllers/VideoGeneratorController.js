@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { checkGeneratedContent, checkGeneratedContentVeo } from "../services/checkGeneratedContent.js";
+import _ from "lodash";
 import fs from "node:fs";
 import path from "node:path";
 import { GenerationsHistory, Models } from "../models/index.js";
@@ -184,21 +185,17 @@ class VideoGeneratorController {
       }
 
       if (files) {
-        files.map(file => {
+        files.forEach((file) => {
           const targetPath = path.resolve('src/public', file.filename);
           fs.copyFileSync(file.path, targetPath);
           fs.unlinkSync(file.path);
+          _.set(req.body, file.fieldname, `${req.protocol}://${req.headers.host}/public/${file.filename}`);
         })
       }
 
       const { data } = await axios.post('https://api.kie.ai/api/v1/jobs/createTask', {
         model: model.replace('_', '/'),
-        input: {
-          ...input,
-          image_url: files[0] && !(model === 'nano-banana-pro' || model === 'flux-2/flex-image-to-image') ? `${req.protocol}://${req.headers.host}/public/${files[0].filename}` : undefined,
-          image_input: files[0] && model === 'nano-banana-pro' ? files.map(f => `${req.protocol}://${req.headers.host}/public/${f.filename}`) : undefined,
-          input_urls: files[0] && model === 'flux-2/flex-image-to-image' ? files.map(f => `${req.protocol}://${req.headers.host}/public/${f.filename}`) : undefined,
-        },
+        input,
       }, {
         headers: {
           'Authorization': `Bearer ${KIE_API_KEY}`,
@@ -206,21 +203,15 @@ class VideoGeneratorController {
         }
       });
 
-      if (data.code === 200) {
-
-        console.log('Task submitted:', data);
-        res.json({
-          taskId: data.data.taskId
-        })
-      } else {
-        console.error('Request failed:', data.msg || 'Unknown error');
-        res.json({
-          error: data.msg
-
-        })
+      if(data.code === 500) {
+        throw HttpErrors(409, data.msg);
       }
+
+      res.json({
+        taskId: data.data.taskId
+      })
     } catch (err) {
-      next(err);
+      next(err?.response?.data || err);
     }
   }
 
@@ -328,15 +319,17 @@ class VideoGeneratorController {
   static async changeModelToken(req, res, next) {
     try {
       const { models } = req.body;
-      const a = models.map(model => {
+      models.map(model => {
         Models.update(
           model,
           { where: { id: model.id } }
         );
       });
 
+      const editedModels = await Models.findAll();
+
       res.json({
-        a,
+        models: editedModels,
       });
     } catch (e) {
       next(e);

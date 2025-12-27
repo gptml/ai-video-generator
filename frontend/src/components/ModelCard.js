@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import * as backgrounds from "../data/backgrounds";
 import { useSelector } from "react-redux";
 import { Link } from 'react-router';
@@ -9,13 +9,29 @@ function ModelCard(props) {
   const user = useSelector(state => state.users.user);
 
   const videoRef = useRef(null);
-  const play = () => videoRef.current?.play();
-  const pause = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.pause();
-    video.currentTime = 0;
-  };
+
+  const play = useCallback(() => {
+    try {
+      const video = videoRef.current;
+      if (!video) return;
+      video.muted = true;
+      video.currentTime = 0;
+      video.play();
+    } catch (e) {
+      console.error(e)
+    }
+  }, [])
+
+  const pause = useCallback(() => {
+    try {
+      const video = videoRef.current;
+      if (!video) return;
+      video.pause();
+      video.currentTime = 0;
+    } catch (e) {
+      console.error(e)
+    }
+  }, [])
 
   if (backgroundType === 'image') {
     return (
@@ -36,7 +52,8 @@ function ModelCard(props) {
             <h3 className="mb-1 text-base font-semibold text-gray-50">{title}</h3>
             <div className="mb-2 flex w-full flex-col gap-1 rounded-lg bg-gray-50/10 p-2">
               <div className="flex w-full items-center gap-1"><span
-                className="text-[10px] font-medium uppercase text-gray-400">{`${token} токенов за генерацию`}</span></div>
+                className="text-[10px] font-medium uppercase text-gray-400">{`${token} токенов за генерацию`}</span>
+              </div>
             </div>
             {/*<div className="relative w-full">*/}
             {/*  <div className="flex gap-1.5 overflow-hidden"><span*/}
@@ -65,8 +82,15 @@ function ModelCard(props) {
         onMouseLeave={pause}
         className="group relative flex aspect-[4/3] cursor-pointer flex-col items-start justify-end overflow-hidden rounded-2xl border border-default-100 transition-all duration-300 hover:shadow-2xl">
         <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110">
-          <video muted ref={videoRef} src={backgrounds[background]}
-                 className="h-full w-full object-cover" loop="" playsInline="" preload="metadata"></video>
+          <video
+            muted
+            ref={videoRef}
+            src={backgrounds[background]}
+            className="h-full w-full object-cover"
+            loop
+            playsInline
+            preload="metadata"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30"></div>
         </div>
         <div

@@ -3,26 +3,28 @@ import Wrapper from "../../components/Wrapper";
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
-import Video from "../../components/Video";
+import Audio from "../../components/Audio";
 import { getProfileRequest } from "../../store/reducers/users";
 import File from "../../components/form/File";
-import Image from "../../components/Image";
+import Switcher from "../../components/form/Switcher";
 import { useParams } from "react-router";
+import Textarea from "../../components/form/Textarea";
+import Input from "../../components/form/Input";
 
-function OpenAiWaterMarkRemoveForm() {
+
+function RecreaftForm() {
 
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'sora-watermark-remover',
-    title: 'Sora 2 Watermark Remove',
+    model: 'recraft/remove-background',
+    title: 'Recraft Remove Background',
     input: {}
   });
 
 
   const dispatch = useDispatch();
-
   const model = useSelector(state => state.generateVideo.singleModel);
 
   const { modelId } = useParams();
@@ -30,6 +32,7 @@ function OpenAiWaterMarkRemoveForm() {
   useEffect(() => {
     dispatch(getSingleModelRequest(modelId))
   }, [])
+
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
     setFormData({ ...formData });
@@ -79,26 +82,24 @@ function OpenAiWaterMarkRemoveForm() {
     setLoading(false);
   }, [formData]);
 
-
   return (
     <Wrapper>
-        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
         <div className="mr-20">
           <p className="text-xl">{model.title}</p>
           <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
           <form className="modelForm" onSubmit={handleSubmit}>
 
             <File
-              value={formData.input.video_url}
+              value={formData.image}
               onChange={(ev) => {
                 const file = ev.target.files[0];
                 file.uri = URL.createObjectURL(file);
-                handleChange('input.video_url', file)
+                handleChange('image', file)
               }}
-              onFileDelete={() => handleChange('input.video_url', null)}
-              accept="video/*"
+              onFileDelete={() => handleChange('image', null)}
+              accept="image/*"
             />
-
 
             <button
               disabled={loading}
@@ -131,13 +132,10 @@ function OpenAiWaterMarkRemoveForm() {
             </button>
           </form>
         </div>
-
-        {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
       </div>
-
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
+      {generatedContent ? <Audio src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
 
-export default OpenAiWaterMarkRemoveForm;
+export default RecreaftForm;

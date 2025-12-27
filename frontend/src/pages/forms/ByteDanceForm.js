@@ -2,16 +2,15 @@ import React, { useCallback, useEffect } from 'react';
 import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
 import { TextField, MenuItem, Button, Box, Typography } from "@mui/material";
-import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
 import Video from "../../components/Video";
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { getProfileRequest } from "../../store/reducers/users";
 import { useParams } from "react-router";
 import Textarea from "../../components/form/Textarea";
 import File from "../../components/form/File";
+import Select from "../../components/form/Select";
 
 const types = [{
   model: 'bytedance/v1-pro-fast-image-to-video',
@@ -37,7 +36,6 @@ function ByteDanceForm() {
 
   const model = useSelector(state => state.generateVideo.singleModel);
 
-  console.log(model, 999)
   const dispatch = useDispatch();
   const { modelId } = useParams();
 
@@ -107,8 +105,8 @@ function ByteDanceForm() {
         onClick={handleSetType}
         selectedType={type}
       />
-      <Typography variant="h4" sx={{ marginBottom: 2 }}>{model.title}</Typography>
-      <p>{model.description}</p>
+      <p className="h4">{model.title}</p>
+      <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
       <Box
         component="form"
         sx={{ display: "flex", flexDirection: "column", gap: 2, width: 600, marginBottom: 10 }}
@@ -123,27 +121,21 @@ function ByteDanceForm() {
           hint="Текстовая подсказка, использованная для создания видео."
         />
 
-        <MuiFileInput
-          label="Файл"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            inputProps: {
-              accept: '.png, .jpeg, .jpg, .webp'
-            },
-            startAdornment: <AttachFileIcon />
-          }}
-          onChange={(file) => handleChange('image', file)}
+        <File
           value={formData.image}
-          getInputText={(file) => file ? file.name : 'Выберите файл'}
-
+          onChange={(ev) => {
+            const file = ev.target.files[0];
+            file.uri = URL.createObjectURL(file);
+            handleChange('image', file)
+          }}
+          onFileDelete={() => handleChange('image', null)}
+          accept="image/*"
         />
+
+        <Select />
         <TextField
-          select
-          label="Разрешение"
           defaultValue="720p"
           helperText="Пожалуйста, выберите разрешение"
-          onChange={(ev) => handleChange('input.resolution', ev.target.value)}
 
         >
           {resolutions.map((option) => (

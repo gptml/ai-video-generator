@@ -3,26 +3,35 @@ import Wrapper from "../../components/Wrapper";
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
-import Video from "../../components/Video";
-import { getProfileRequest } from "../../store/reducers/users";
-import File from "../../components/form/File";
 import Image from "../../components/Image";
+import { getProfileRequest } from "../../store/reducers/users";
 import { useParams } from "react-router";
+import Textarea from "../../components/form/Textarea";
+import File from "../../components/form/File";
+import Select from "../../components/form/Select";
+import Input from "../../components/form/Input";
 
-function OpenAiWaterMarkRemoveForm() {
+
+const resolutions = [
+  { value: '480p', label: '480p' },
+  { value: '720p', label: '720p' },
+];
+
+function InfinitalkForm() {
 
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'sora-watermark-remover',
-    title: 'Sora 2 Watermark Remove',
-    input: {}
+    model: 'infinitalk/from-audio',
+    title: 'Infinitalk API-AI lip-sync generator',
+    input: {
+      resolution: '480p',
+    }
   });
 
 
   const dispatch = useDispatch();
-
   const model = useSelector(state => state.generateVideo.singleModel);
 
   const { modelId } = useParams();
@@ -30,6 +39,8 @@ function OpenAiWaterMarkRemoveForm() {
   useEffect(() => {
     dispatch(getSingleModelRequest(modelId))
   }, [])
+
+
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
     setFormData({ ...formData });
@@ -39,7 +50,6 @@ function OpenAiWaterMarkRemoveForm() {
   const handleSubmit = useCallback(async (ev) => {
     ev.preventDefault();
     setLoading(true);
-
     const { payload } = await dispatch(generateVideoRequest(formData))
     // const payload = { taskId: 'bedf681647c3d2dc8feafd6d59073730' }
     if (payload.error) {
@@ -80,23 +90,58 @@ function OpenAiWaterMarkRemoveForm() {
   }, [formData]);
 
 
+
   return (
     <Wrapper>
-        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
         <div className="mr-20">
           <p className="text-xl">{model.title}</p>
           <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
           <form className="modelForm" onSubmit={handleSubmit}>
+            <Textarea
+              label="Текст"
+              required
+              onChange={(ev) => handleChange('input.prompt', ev.target.value)}
+              value={formData.input.prompt}
+              placeholder="введите ваше сообщение"
+              hint="Текстовая подсказка, использованная для создания видео."
+            />
 
             <File
-              value={formData.input.video_url}
+              value={formData.input.image_url}
               onChange={(ev) => {
                 const file = ev.target.files[0];
                 file.uri = URL.createObjectURL(file);
-                handleChange('input.video_url', file)
+                handleChange('input.image_url', file)
               }}
-              onFileDelete={() => handleChange('input.video_url', null)}
-              accept="video/*"
+              onFileDelete={() => handleChange('input.image_url', null)}
+              accept="image/*"
+            />
+
+            <File
+              value={formData.audio_url}
+              onChange={(ev) => {
+                const file = ev.target.files[0];
+                file.uri = URL.createObjectURL(file);
+                handleChange('audio_url', file)
+              }}
+              onFileDelete={() => handleChange('audio_url', null)}
+              accept="audio/*"
+              text='MPEG, MP3'
+            />
+
+
+            <Select
+              label="Размер изображения"
+              options={resolutions}
+              onChange={(val) => handleChange('input.resolution', val.value)}
+              value={resolutions.find(r => r.value === formData.resolution)}
+            />
+
+            <Input
+              type="number"
+              label="Использование случайного начального значения для контроля стохастичности генерации изображений."
+              onChange={(ev) => handleChange('input.seed', ev.target.value)}
             />
 
 
@@ -134,10 +179,8 @@ function OpenAiWaterMarkRemoveForm() {
 
         {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
       </div>
-
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
 
-export default OpenAiWaterMarkRemoveForm;
+export default InfinitalkForm;

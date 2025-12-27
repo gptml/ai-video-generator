@@ -1,38 +1,13 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import MuiCard from '@mui/material/Card';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { loginRequest } from "../store/reducers/users";
 import _ from "lodash";
-import IconButton from '@mui/material/IconButton';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
-import { useNavigate } from "react-router";
-
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  [theme.breakpoints.up('sm')]: {
-    width: '450px',
-  },
-  ...theme.applyStyles('dark', {
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-  }),
-}));
+import Input from "../components/form/Input";
+import logo from '../assets/icons/logo-svg.svg';
+import { Link } from 'react-router';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -43,7 +18,6 @@ export default function Login() {
   const [error, setError] = useState('');
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleChange = useCallback((path, value) => {
     setError('');
@@ -61,81 +35,65 @@ export default function Login() {
     }
   }, [formData, dispatch])
 
+
   return (
-    <div id="login">
-      <Card variant="outlined">
-        <Typography
-          component="h1"
-          variant="h4"
-          sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-        >
-         AI video generator
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
-        >
-          <FormControl>
-            <FormLabel htmlFor="email">Электронная почта</FormLabel>
-            <TextField
-              error={!!error}
-              value={formData.email}
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <img src={logo} alt="Your Company" className="mx-auto h-10 w-auto" />
+        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight ">Sign in to your account</h2>
+      </div>
+
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="mt-2">
+            <Input
+              label="Email address"
+              onChange={(ev) => handleChange('email', ev.target.value)}
+              id="email"
               type="email"
               name="email"
-              placeholder="your@email.com"
-              autoFocus
               required
-              fullWidth
-              onChange={(ev) => handleChange('email', ev.target.value)}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="email">Пароль</FormLabel>
-            <TextField
-              error={!!error}
-              helperText={error}
-              value={formData.password}
-              placeholder="••••••"
-              id="password"
-              autoFocus
-              required
-              fullWidth
-              variant="outlined"
-              onChange={(ev) => handleChange('password', ev.target.value)}
-              type={showPassword ? 'text' : 'password'}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  ),
-                },
-              }}
-            />
-          </FormControl>
-          <Button type="submit" size="large" sx={{ mt: 2 }} fullWidth variant="contained">
-            Войти
-          </Button>
-          <Typography
-            variant="body2"
-            textAlign="center"
-            mt={1}
-            sx={{ cursor: "pointer" }}
-          >
-            У вас нет учетной записи?
-            <Button
-              variant="text"
-              onClick={() => navigate('/register')}
-            >
-              Зарегистрироваться
-            </Button>
-          </Typography>
-        </Box>
+              value={formData.email}
+              className={error ? "bg-red-50 border border-red-300" : null}
 
-      </Card>
+            />
+          </div>
+          <div className="relative mt-2">
+            <Input
+              label="Password"
+              onChange={(ev) => handleChange('password', ev.target.value)}
+              value={formData.password}
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              required
+              className={error ? "bg-red-50 border border-red-300" : null}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-2/3 -translate-y-1/2 text-black-500"
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </button>
+          </div>
+
+          <div>
+            <button type="submit"
+                    className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Sign
+              in
+            </button>
+          </div>
+        </form>
+
+        <p className="mt-10 text-center text-sm/6 text-black-400">
+          У вас нет учетной записи?
+          <Link to="/register"
+                className="font-semibold text-indigo-400 hover:text-indigo-300 ml-2">Зарегистрироваться</Link>
+        </p>
+      </div>
     </div>
-  );
+
+  )
+
 }

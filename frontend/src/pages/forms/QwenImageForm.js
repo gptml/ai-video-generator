@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect } from 'react';
 import Wrapper from "../../components/Wrapper";
-import { TextField, MenuItem, Button, FormControlLabel, Switch } from "@mui/material";
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
-import Video from "../../components/Video";
+import Image from "../../components/Image";
 import { getProfileRequest } from "../../store/reducers/users";
 import { useParams } from "react-router";
 import Textarea from "../../components/form/Textarea";
@@ -13,6 +12,7 @@ import Select from "../../components/form/Select";
 import RowSelect from "../../components/form/RowSelect";
 import Input from "../../components/form/Input";
 import Switcher from "../../components/form/Switcher";
+import GenerationTypes from "../../components/GenerationTypes";
 
 
 const imageSizes = [
@@ -23,6 +23,18 @@ const imageSizes = [
   { value: 'landscape_4_3', label: 'горизонтальный_4_3' },
   { value: 'landscape_16_9', label: 'горизонтальный_16_9' },
 ];
+
+const types = [
+  {
+    model: 'qwen/image-to-image',
+    title: 'image-to-image',
+  },
+  {
+    model: 'qwen/text-to-image',
+    title: 'text-to-image',
+  },
+]
+
 
 const accelerations = [
   { value: 'none', label: 'нет' },
@@ -43,14 +55,15 @@ const outputFormat = [
 ];
 
 
-function QwenImageEditForm() {
+function QwenImageForm() {
 
   const [state, setState] = React.useState('generating');
+  const [type, setType] = React.useState('image-to-image');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'qwen/image-edit',
-    title: 'Qwen Image Edit',
+    model: 'qwen/image-to-image',
+    title: 'Qwen Image',
     input: {
       acceleration: 'none',
       image_size: 'square',
@@ -82,8 +95,8 @@ function QwenImageEditForm() {
   const handleSubmit = useCallback(async (ev) => {
     ev.preventDefault();
     setLoading(true);
-    // const { payload } = await dispatch(generateVideoRequest({ ...formData, images: [formData.image] }))
-    const payload = { taskId: 'bedf681647c3d2dc8feafd6d59073730' }
+    const { payload } = await dispatch(generateVideoRequest(formData))
+    // const payload = { taskId: 'bedf681647c3d2dc8feafd6d59073730' }
     if (payload.error) {
       alert(payload.error)
     }
@@ -121,9 +134,21 @@ function QwenImageEditForm() {
     setLoading(false);
   }, [formData]);
 
+  const handleSetType = useCallback((type) => {
+    setType(type.title);
+    handleChange('model', type.model);
+    setGeneratedContent('')
+  }, [])
+
 
   return (
-    <Wrapper className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+    <Wrapper >
+      <GenerationTypes
+        types={types}
+        onClick={handleSetType}
+        selectedType={type}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
       <div className="mr-20">
         <p className="text-xl">{model.title}</p>
         <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
@@ -137,22 +162,22 @@ function QwenImageEditForm() {
             hint="Текстовая подсказка, использованная для создания видео."
           />
 
-          <File
-            value={formData.image}
+          {type === 'image-to-image' ? <File
+            value={formData.input.image_url}
             onChange={(ev) => {
               const file = ev.target.files[0];
               file.uri = URL.createObjectURL(file);
-              handleChange('image', file)
+              handleChange('input.image_url', file)
             }}
-            onFileDelete={() => handleChange('image', null)}
+            onFileDelete={() => handleChange('input.image_url', null)}
             accept="image/*"
-          />
+          /> : null}
 
-          <Select
+          {type === 'text-to-image' ? <Select
             label="Размер изображения"
             options={imageSizes}
             onChange={(val) => handleChange('input.image_size', val.value)}
-          />
+          /> : null}
 
           <RowSelect
             label="ускорение"
@@ -180,6 +205,7 @@ function QwenImageEditForm() {
             label="The number of inference steps"
             type="number"
             onChange={(ev) => handleChange('input.num_inference_steps', ev.target.value)}
+            value={formData.num_inference_steps}
           />
 
           <Switcher
@@ -225,9 +251,11 @@ function QwenImageEditForm() {
           </button>
         </form>
       </div>
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
+
+      {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
+      </div>
     </Wrapper>
   );
 }
 
-export default QwenImageEditForm;
+export default QwenImageForm;

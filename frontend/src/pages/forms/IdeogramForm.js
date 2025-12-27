@@ -3,26 +3,65 @@ import Wrapper from "../../components/Wrapper";
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
-import Video from "../../components/Video";
-import { getProfileRequest } from "../../store/reducers/users";
-import File from "../../components/form/File";
 import Image from "../../components/Image";
+import { getProfileRequest } from "../../store/reducers/users";
 import { useParams } from "react-router";
+import Textarea from "../../components/form/Textarea";
+import File from "../../components/form/File";
+import Select from "../../components/form/Select";
+import Input from "../../components/form/Input";
+import Switcher from "../../components/form/Switcher";
+import RowSelect from "../../components/form/RowSelect";
 
-function OpenAiWaterMarkRemoveForm() {
+
+const renderingSpeeds = [
+  { value: 'TURBO', label: 'TURBO' },
+  { value: 'BALANCED', label: 'СБАЛАНСИРОВАННЫЙ' },
+  { value: 'QUALITY', label: 'КАЧЕСТВО' },
+];
+
+const styles = [
+  { value: 'AUTO', label: 'АВТО' },
+  { value: 'GENERAL', label: 'ОБЩИЙ' },
+  { value: 'REALISTIC', label: 'РЕАЛИСТИЧНЫЙ' },
+  { value: 'DESIGN', label: 'ДИЗАЙН' },
+];
+
+const imageSizes = [
+  { value: 'square', label: 'квадрат' },
+  { value: 'square_hd', label: 'квадрат_hd' },
+  { value: 'portrait_4_3', label: 'портрет_4_3' },
+  { value: 'portrait_16_9', label: 'портрет_16_9' },
+  { value: 'landscape_4_3', label: 'горизонтальный_4_3' },
+  { value: 'landscape_16_9', label: 'горизонтальный_16_9' },
+];
+
+const numImages = [
+  { value: '1', label: '1' },
+  { value: '2', label: '2' },
+  { value: '3', label: '3' },
+  { value: '4', label: '4' },
+];
+
+
+function IdeogramForm() {
 
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'sora-watermark-remover',
-    title: 'Sora 2 Watermark Remove',
-    input: {}
+    model: 'ideogram/v3-reframe',
+    title: 'Ideogram V3 Reframe Image',
+    input: {
+      image_size: 'square',
+      rendering_speed: 'TURBO',
+      style: 'AUTO',
+      num_images: '1',
+    }
   });
 
 
   const dispatch = useDispatch();
-
   const model = useSelector(state => state.generateVideo.singleModel);
 
   const { modelId } = useParams();
@@ -30,6 +69,8 @@ function OpenAiWaterMarkRemoveForm() {
   useEffect(() => {
     dispatch(getSingleModelRequest(modelId))
   }, [])
+
+
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
     setFormData({ ...formData });
@@ -39,7 +80,6 @@ function OpenAiWaterMarkRemoveForm() {
   const handleSubmit = useCallback(async (ev) => {
     ev.preventDefault();
     setLoading(true);
-
     const { payload } = await dispatch(generateVideoRequest(formData))
     // const payload = { taskId: 'bedf681647c3d2dc8feafd6d59073730' }
     if (payload.error) {
@@ -82,23 +122,58 @@ function OpenAiWaterMarkRemoveForm() {
 
   return (
     <Wrapper>
-        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
         <div className="mr-20">
           <p className="text-xl">{model.title}</p>
           <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
           <form className="modelForm" onSubmit={handleSubmit}>
 
             <File
-              value={formData.input.video_url}
+              value={formData.image_url}
               onChange={(ev) => {
                 const file = ev.target.files[0];
                 file.uri = URL.createObjectURL(file);
-                handleChange('input.video_url', file)
+                handleChange('image_url', file)
               }}
-              onFileDelete={() => handleChange('input.video_url', null)}
-              accept="video/*"
+              onFileDelete={() => handleChange('image_url', null)}
+              accept="image/*"
             />
 
+            <Select
+              label="Размер изображения"
+              options={imageSizes}
+              onChange={(val) => handleChange('input.image_size', val.value)}
+              value={imageSizes?.find(r => r.value === formData.image_size)}
+            />
+
+
+            <Select
+              label="Скорость рендеринга"
+              options={renderingSpeeds}
+              onChange={(val) => handleChange('input.rendering_speed', val.value)}
+              value={renderingSpeeds?.find(r => r.value === formData.rendering_speed)}
+            />
+
+            <Select
+              label="Стили"
+              options={styles}
+              onChange={(val) => handleChange('input.style', val.value)}
+              value={styles?.find(r => r.value === formData.style)}
+            />
+
+            <RowSelect
+              label="Количество изображений"
+              items={numImages}
+              onClick={(val) => handleChange('input.num_images', val)}
+              value={formData.input.num_images}
+            />
+
+
+            <Input
+              type="number"
+              label="Использование случайного начального значения для контроля стохастичности генерации изображений."
+              onChange={(ev) => handleChange('input.seed', ev.target.value)}
+            />
 
             <button
               disabled={loading}
@@ -134,10 +209,8 @@ function OpenAiWaterMarkRemoveForm() {
 
         {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
       </div>
-
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
 
-export default OpenAiWaterMarkRemoveForm;
+export default IdeogramForm;

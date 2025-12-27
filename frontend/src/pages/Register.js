@@ -1,19 +1,12 @@
 import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { registerUserRequest } from "../store/reducers/users";
+import logo from "../assets/icons/logo-svg.svg";
+import Input from "../components/form/Input";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +14,6 @@ export default function RegisterForm() {
   const [formData, setFormData] = useState({});
 
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleChange = useCallback((key, value) => {
@@ -43,115 +35,96 @@ export default function RegisterForm() {
       }
 
     }
-    console.log(formData)
   }, [formData])
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f5f5f5",
-        p: 2,
-      }}
-      component="form"
-      onSubmit={handleSubmit}
-    >
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          width: "100%",
-          maxWidth: 450,
-          borderRadius: 3,
-        }}
-      >
-        <Typography variant="h5" textAlign="center" mb={3}>
-          Зарегистрироваться
-        </Typography>
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <img src={logo} alt="Your Company" className="mx-auto h-10 w-auto" />
+        <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight ">Зарегистрироваться</h2>
+      </div>
 
-        <TextField
-          label="Полное имя"
-          fullWidth
-          margin="normal"
-          onChange={(ev) => handleChange('name', ev.target.value)}
-          value={formData.name}
-        />
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="mt-2">
+            <Input
+              label="Полное имя"
+              onChange={(ev) => handleChange('name', ev.target.value)}
+              id="name"
+              type="text"
+              name="name"
+              required
+              value={formData.name}
+            />
+          </div>
+          <div className="mt-2">
+            <Input
+              label="Email address"
+              onChange={(ev) => handleChange('email', ev.target.value)}
+              id="email"
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+            />
+          </div>
+          <div className="relative mt-2">
+            <Input
+              label="Password"
+              onChange={(ev) => handleChange('password', ev.target.value)}
+              value={formData.password}
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-2/3 -translate-y-1/2 text-black-500"
+            >
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </button>
+          </div>
 
-        <TextField
-          label="Электронная почта"
-          type="email"
-          fullWidth
-          margin="normal"
-          onChange={(ev) => handleChange('email', ev.target.value)}
-          value={formData.email}
-        />
+          <div className="relative mt-2">
+            <Input
+              label="Подтвердите пароль"
+              onChange={(ev) => handleChange('confirmPassword', ev.target.value)}
+              value={formData.confirmPassword}
+              id="confirmPassword"
+              type={showConfirm ? 'text' : 'password'}
+              name="confirmPassword"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-2/3 -translate-y-1/2 text-black-500"
+            >
+              {showConfirm ? <VisibilityOff /> : <Visibility />}
+            </button>
+          </div>
 
-        <TextField
-          label="Пароль"
-          type={showPassword ? "text" : "password"}
-          fullWidth
-          margin="normal"
-          onChange={(ev) => handleChange('password', ev.target.value)}
-          value={formData.password}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
 
-        <TextField
-          label="Подтвердите пароль"
-          type={showConfirm ? "text" : "password"}
-          fullWidth
-          margin="normal"
-          onChange={(ev) => handleChange('confirmPassword', ev.target.value)}
-          value={formData.confirmPassword}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowConfirm(!showConfirm)}>
-                  {showConfirm ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+          <div>
+            <button
+              type="submit"
+              className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            >
+              Зарегистрироваться
+            </button>
+          </div>
+        </form>
 
-        <Button
-          variant="contained"
-          fullWidth
-          size="large"
-          sx={{ mt: 2, py: 1.2 }}
-          type="submit"
-          disabled={!formData.name}
-        >
-          Зарегистрироваться
-        </Button>
-
-        <Typography
-          variant="body2"
-          textAlign="center"
-          mt={2}
-          sx={{ cursor: "pointer" }}
-        >
+        <p className="mt-10 text-center text-sm/6 text-black-400">
           Уже есть аккаунт?
-          <Button
-            variant="text"
-            sx={{ textTransform: 'capitalize' }}
-            onClick={() => navigate('/login')}
-          >
-            Войти
-          </Button>
-        </Typography>
-      </Paper>
-    </Box>
-  );
+          <Link to="/login"
+                className="font-semibold text-indigo-400 hover:text-indigo-300 ml-2">Войти</Link>
+        </p>
+      </div>
+    </div>
+
+  )
+
 }

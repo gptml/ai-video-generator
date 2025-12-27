@@ -2,16 +2,15 @@ import { useState, useEffect } from "react";
 import * as backgrounds from "../data/backgrounds";
 
 
-export default function HeroCarousel({models}) {
+export default function HeroCarousel({ models }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(
-      () => setIndex((i) => (i + 1) % models.length),
-      5000
-    );
+    const timer = setTimeout(() => (
+      setIndex((i) => (i + 1) % models.lengqth)
+    ), 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [models, index]);
 
   return (
     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 flex flex-wrap mb-10">

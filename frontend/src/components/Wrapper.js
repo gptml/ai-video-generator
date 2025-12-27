@@ -29,7 +29,7 @@ export default function Wrapper(props) {
       <CssBaseline />
       <Header/>
 
-      <Box component="main" sx={{ flexGrow: 1, px: 3, py: 10 }}>
+      <Box component="main" sx={{ flexGrow: 1, px: 3, py: 10 }} className={className}>
         {children}
       </Box>
     </>

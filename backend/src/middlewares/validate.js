@@ -40,7 +40,7 @@ export const joinedArray = (j) => ({
 export const validateMiddleware = (schema = '') => (req, res, next) => {
   try {
     const rules = schema ? _.get(schemas, schema) : {};
-    console.log(schemas)
+
     if (!rules) {
       throw HttpErrors(503, `Validation failed. ${schema}`);
     }

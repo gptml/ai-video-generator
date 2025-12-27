@@ -15,7 +15,6 @@ GenerationsHistory.init({
   taskId: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
   },
   userId: {
     type: DataTypes.STRING,
@@ -34,11 +33,11 @@ GenerationsHistory.init({
     allowNull: false,
   },
   result: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   failMsg: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   createTime: {
@@ -53,6 +52,9 @@ GenerationsHistory.init({
   sequelize,
   tableName: 'generations_history',
   modelName: 'generations_history',
+  indexes: [
+    { fields: ['taskId'], unique: true },
+  ]
 });
 
 

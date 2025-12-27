@@ -5,20 +5,29 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 
 export default function Video(props) {
+
   return (
-    <Card sx={{ maxWidth: 800 }}>
-      <CardActionArea>
+    <div className="max-w-[800px] rounded-xl   shadow-sm overflow-hidden">
+
+      {/* Video */}
+      <div className="p-2">
         <video
           controls
-          style={{ width: "100%", borderRadius: 8 }}
           src={props.src}
+          className="w-full rounded-lg"
         />
-      </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary" component="a" href={props.href}>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center justify-start px-4 py-3 border-t">
+        <a
+          href={props.href}
+          className="text-blue-600 text-sm font-medium hover:underline"
+        >
           Скачать
-        </Button>
-      </CardActions>
-    </Card>
-  );
+        </a>
+      </div>
+    </div>
+
+  )
 }

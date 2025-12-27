@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import Users from '../models/Users.js';
 import HttpErrors from "http-errors";
 import jwt from "jsonwebtoken";
+import { Models } from "../models/index.js";
 
 const { TOKEN_SECRET } = process.env;
 
@@ -33,25 +34,21 @@ class UsersController {
     }
   }
 
-  async getUsersList(req, res, next) {
+  static async getUsersList(req, res, next) {
     try {
-      const { limit = 20, page = 1, ids = [] } = req.body;
+      const { limit = 20, page = 1 } = req.params;
 
       const where = {
         [Op.and]: [],
       };
 
-      if (ids.length) {
-        where[Op.and].push({
-          id: { [Op.in]: ids },
-        });
-      }
 
       const users = await Users.findAll({
         where,
         limit,
         offset: (page - 1) * limit,
         paranoid: false,
+        order: [['createdAt', 'DESC']],
       });
 
       const total = await Users.count({
@@ -106,6 +103,30 @@ class UsersController {
     }
   }
 
+  static async changeUserToken(req, res, next) {
+    try {
+      const { tokens, id } = req.body;
+
+
+      const user = await Users.findOne({
+        attributes: ['id'],
+        where: {
+          id,
+        },
+        rejectOnEmpty: HttpErrors(404)
+      });
+
+      await user.update({
+        tokens,
+      });
+
+      res.json({
+        user,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
 
   async createUser(req, res, next) {
     try {

@@ -4,6 +4,9 @@ const { REACT_APP_API_URL } = process.env;
 
 const api = axios.create({
   baseURL: REACT_APP_API_URL,
+  formSerializer: {
+    indexes: true
+  }
 })
 
 api.interceptors.request.use((config) => {
@@ -48,5 +51,13 @@ export default class Api {
 
   static changeTokenCount(data) {
     return api.post('/video-generator/change-token-count', data)
+  }
+
+  static changeUserTokenCount(data) {
+    return api.post('/users/update-token', data)
+  }
+
+  static getUsersList(page) {
+    return api.get('/users/list', { params: { page } })
   }
 }

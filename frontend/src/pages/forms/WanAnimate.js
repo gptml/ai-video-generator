@@ -1,28 +1,49 @@
 import React, { useCallback, useEffect } from 'react';
+import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
-import Video from "../../components/Video";
 import { getProfileRequest } from "../../store/reducers/users";
 import File from "../../components/form/File";
 import Image from "../../components/Image";
 import { useParams } from "react-router";
+import Textarea from "../../components/form/Textarea";
+import Select from "../../components/form/Select";
 
-function OpenAiWaterMarkRemoveForm() {
+const types = [
+  {
+    model: 'wan/2-2-animate-move',
+    title: 'animate-move',
+  },
+  {
+    model: 'wan/2-2-animate-replace',
+    title: 'image-to-video',
+  },
+]
 
+const resolutions = [
+  { value: '480p', label: '480p' },
+  { value: '580p', label: '580p' },
+  { value: '720p', label: '720p' },
+];
+
+function WanAnimate() {
+
+  const [type, setType] = React.useState('image-to-video');
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'sora-watermark-remover',
-    title: 'Sora 2 Watermark Remove',
-    input: {}
+    model: 'wan/2-2-animate-move',
+    title: 'Wan 2.2 Animate',
+    input: {
+      resolution: '480p',
+    }
   });
 
 
   const dispatch = useDispatch();
-
   const model = useSelector(state => state.generateVideo.singleModel);
 
   const { modelId } = useParams();
@@ -30,6 +51,11 @@ function OpenAiWaterMarkRemoveForm() {
   useEffect(() => {
     dispatch(getSingleModelRequest(modelId))
   }, [])
+
+  const handleSetType = useCallback((type) => {
+    setType(type.title);
+  }, [])
+
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
     setFormData({ ...formData });
@@ -79,14 +105,41 @@ function OpenAiWaterMarkRemoveForm() {
     setLoading(false);
   }, [formData]);
 
+  console.log(formData, 8888)
 
   return (
     <Wrapper>
-        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      <GenerationTypes
+        types={types}
+        onClick={handleSetType}
+        selectedType={type}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
         <div className="mr-20">
           <p className="text-xl">{model.title}</p>
           <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
           <form className="modelForm" onSubmit={handleSubmit}>
+
+            <Textarea
+              label="Текст"
+              required
+              onChange={(ev) => handleChange('input.prompt', ev.target.value)}
+              value={formData.input.prompt}
+              placeholder="введите ваше сообщение"
+              hint="Текстовая подсказка, использованная для создания видео."
+            />
+
+            <File
+              value={formData.input.image_url}
+              onChange={(ev) => {
+                const file = ev.target.files[0];
+                file.uri = URL.createObjectURL(file);
+                handleChange('input.image_url', file)
+              }}
+              onFileDelete={() => handleChange('input.image_url', null)}
+              accept="image/*"
+            />
+
 
             <File
               value={formData.input.video_url}
@@ -99,6 +152,12 @@ function OpenAiWaterMarkRemoveForm() {
               accept="video/*"
             />
 
+            <Select
+              label="Размер изображения"
+              options={resolutions}
+              onChange={(val) => handleChange('input.resolution', val.value)}
+              value={resolutions.find(r => r.value === formData.resolution)}
+            />
 
             <button
               disabled={loading}
@@ -134,10 +193,8 @@ function OpenAiWaterMarkRemoveForm() {
 
         {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
       </div>
-
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
 
-export default OpenAiWaterMarkRemoveForm;
+export default WanAnimate;

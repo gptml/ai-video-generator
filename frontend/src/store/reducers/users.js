@@ -6,6 +6,7 @@ export const slice = createSlice({
   initialState: {
     token: localStorage.getItem("token"),
     user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {},
+    usersList: [],
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -16,18 +17,22 @@ export const slice = createSlice({
       state.token = token;
       state.user = user;
     })
-    .addCase(loginRequest.fulfilled, (state, action) => {
-      const { token, user } = action.payload;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      state.token = token;
-      state.user = user;
-    })
-    .addCase(getProfileRequest.fulfilled, (state, action) => {
-      const { user } = action.payload;
-      localStorage.setItem('user', JSON.stringify(user));
-      state.user = user;
-    })
+      .addCase(loginRequest.fulfilled, (state, action) => {
+        const { token, user } = action.payload;
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        state.token = token;
+        state.user = user;
+      })
+      .addCase(getProfileRequest.fulfilled, (state, action) => {
+        const { user } = action.payload;
+        localStorage.setItem('user', JSON.stringify(user));
+        state.user = user;
+      })
+      .addCase(getUsersListRequest.fulfilled, (state, action) => {
+        const { users } = action.payload;
+        state.usersList = users;
+      })
   }
 })
 
@@ -55,6 +60,24 @@ export const registerUserRequest = createAsyncThunk('users/registerUserRequest',
 export const getProfileRequest = createAsyncThunk('users/getProfileRequest', async (arg, thunkAPI) => {
   try {
     const { data } = await Api.getProfile()
+    return data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e.response?.data);
+  }
+})
+
+export const changeUserTokenCountRequest = createAsyncThunk('users/changeUserTokenCountRequest', async (arg, thunkAPI) => {
+  try {
+    const { data } = await Api.changeUserTokenCount(arg)
+    return data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e.response?.data);
+  }
+})
+
+export const getUsersListRequest = createAsyncThunk('users/getUsersListRequest', async (arg, thunkAPI) => {
+  try {
+    const { data } = await Api.getUsersList(arg)
     return data
   } catch (e) {
     return thunkAPI.rejectWithValue(e.response?.data);

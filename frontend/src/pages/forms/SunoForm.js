@@ -12,31 +12,31 @@ import RowSelect from "../../components/form/RowSelect";
 import Switcher from "../../components/form/Switcher";
 
 
-const imageSizes = [
-  { value: '1:1', label: '1:1' },
-  { value: '9:16', label: '9:16' },
-  { value: '16:9', label: '16:9' },
-  { value: '3:4', label: '3:4' },
-  { value: '4:3', label: '4:3' },
-  { value: '3:2', label: '3:2' },
-  { value: '2:3', label: '2:3' },
-  { value: '5:4', label: '5:4' },
-  { value: '4:5', label: '4:5' },
-  { value: '21:9', label: '21:9' },
-  { value: 'auto', label: 'auto' },
+const models = [
+  { value: 'v5', label: 'v5' },
+  { value: 'v4_5plus', label: 'v4_5plus' },
+  { value: 'v4_5', label: 'v4_5' },
+  { value: 'v4', label: 'v4' },
+  { value: 'v4_5all', label: 'v4_5all' },
 ];
 
-function NanoBananaForm(props) {
+const vocalGenders = [
+  { value: 'm', label: 'm' },
+  { value: 'f', label: 'f' },
+];
+
+
+
+function SunoForm() {
 
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    title: 'Nano Banana',
-    model: 'google/nano-banana',
-    input: {
-      image_size: '1:1'
-    }
+    title: 'Suno API',
+    model: 'v4',
+    customMode: false,
+    instrumental: false,
   });
 
 
@@ -105,19 +105,38 @@ function NanoBananaForm(props) {
         <p className="text-xl">{model.title}</p>
         <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
         <form className="modelForm" onSubmit={handleSubmit}>
-          <Textarea
-            label="Текст"
-            required
-            onChange={(ev) => handleChange('input.prompt', ev.target.value)}
-            value={formData.input.prompt}
-            placeholder="введите ваше сообщение"
-            hint="Текстовая подсказка, использованная для создания видео."
-          />
 
           <Select
-            label="Размер изображения"
-            options={imageSizes}
-            onChange={(val) => handleChange('input.image_size', val.value)}
+            label="Модель"
+            options={models}
+            onChange={(val) => handleChange('model', val.value)}
+            value={models.find(m => m.value === formData.model)}
+          />
+
+          <Switcher
+            enabled={formData.customMode}
+            onChange={() => handleChange('customMode', !formData.customMode)}
+            label="Пользовательский режим"
+          />
+
+          <Switcher
+            enabled={formData.instrumental}
+            onChange={() => handleChange('instrumental', !formData.instrumental)}
+            label="Инструментальный"
+          />
+
+          <Textarea
+            label="Стиль"
+            required
+            onChange={(ev) => handleChange('style', ev.target.value)}
+            value={formData.style}
+            placeholder="Указание стиля музыки для сгенерированного аудио."
+          />
+          <RowSelect
+            label="Голосовые гендеры"
+            items={vocalGenders}
+            onClick={(val) => handleChange('vocalGender', val)}
+            value={formData.vocalGender}
           />
 
           <button
@@ -156,4 +175,4 @@ function NanoBananaForm(props) {
   );
 }
 
-export default NanoBananaForm;
+export default SunoForm;

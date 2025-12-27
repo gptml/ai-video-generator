@@ -2,6 +2,7 @@ import { Router } from 'express';
 import VideoGeneratorController from "../controllers/VideoGeneratorController.js";
 import upload from "../middlewares/uploader.js";
 import checkRole from "../middlewares/checkRole.js";
+import validate from "../middlewares/validate.js";
 
 const router = Router();
 
@@ -25,7 +26,8 @@ router.post(
 
 router.post(
   '/generate/:model',
-  upload(['image/png', 'image/jpg', 'image/jpeg']).array('images[]', 8),
+  upload(['image/png', 'image/jpg', 'image/jpeg']).any(),
+  validate('videoGenerator.generate'),
   VideoGeneratorController.generateOtherModel
 );
 

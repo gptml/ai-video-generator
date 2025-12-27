@@ -1,28 +1,49 @@
 import React, { useCallback, useEffect } from 'react';
+import GenerationTypes from "../../components/GenerationTypes";
 import Wrapper from "../../components/Wrapper";
+import { TextField, MenuItem, Button, Box, Typography } from "@mui/material";
+import { MuiFileInput } from 'mui-file-input';
 import _ from 'lodash';
 import { useDispatch, useSelector } from "react-redux";
 import { checkStatusRequest, generateVideoRequest, getSingleModelRequest } from "../../store/reducers/generateVideo";
 import Video from "../../components/Video";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { getProfileRequest } from "../../store/reducers/users";
 import File from "../../components/form/File";
+import RowSelect from "../../components/form/RowSelect";
 import Image from "../../components/Image";
 import { useParams } from "react-router";
+import Textarea from "../../components/form/Textarea";
+import Switcher from "../../components/form/Switcher";
 
-function OpenAiWaterMarkRemoveForm() {
+const types = [
+  {
+    model: 'hailuo/02-text-to-video-pro',
+    title: 'image-to-video',
+  },
+  {
+    model: 'hailuo/02-image-to-video-pro',
+    title: 'image-to-video',
+  },
+]
 
+
+function Hailuo2Form() {
+
+  const [type, setType] = React.useState('image-to-video');
   const [state, setState] = React.useState('generating');
   const [loading, setLoading] = React.useState(false);
   const [generatedContent, setGeneratedContent] = React.useState('');
   const [formData, setFormData] = React.useState({
-    model: 'sora-watermark-remover',
-    title: 'Sora 2 Watermark Remove',
-    input: {}
+    model: 'hailuo/02-text-to-video-pro',
+    title: 'Hailuo 02',
+    input: {
+      prompt_optimizer: true,
+    }
   });
 
 
   const dispatch = useDispatch();
-
   const model = useSelector(state => state.generateVideo.singleModel);
 
   const { modelId } = useParams();
@@ -30,6 +51,11 @@ function OpenAiWaterMarkRemoveForm() {
   useEffect(() => {
     dispatch(getSingleModelRequest(modelId))
   }, [])
+
+  const handleSetType = useCallback((type) => {
+    setType(type.title);
+  }, [])
+
   const handleChange = useCallback((key, value) => {
     _.set(formData, key, value);
     setFormData({ ...formData });
@@ -79,26 +105,46 @@ function OpenAiWaterMarkRemoveForm() {
     setLoading(false);
   }, [formData]);
 
+  console.log(formData, 8888)
 
   return (
     <Wrapper>
-        <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+      <GenerationTypes
+        types={types}
+        onClick={handleSetType}
+        selectedType={type}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
         <div className="mr-20">
           <p className="text-xl">{model.title}</p>
           <p className='mt-1 text-sm/6 text-gray-600'>{model.description}</p>
           <form className="modelForm" onSubmit={handleSubmit}>
 
-            <File
-              value={formData.input.video_url}
+            <Textarea
+              label="Текст"
+              required
+              onChange={(ev) => handleChange('input.prompt', ev.target.value)}
+              value={formData.input.prompt}
+              placeholder="введите ваше сообщение"
+              hint="Текстовая подсказка, использованная для создания видео."
+            />
+
+            {type === 'image-to-video' ? <File
+              value={formData.input.image_url}
               onChange={(ev) => {
                 const file = ev.target.files[0];
                 file.uri = URL.createObjectURL(file);
-                handleChange('input.video_url', file)
+                handleChange('input.image_url', file)
               }}
-              onFileDelete={() => handleChange('input.video_url', null)}
-              accept="video/*"
-            />
+              onFileDelete={() => handleChange('input.image_url', null)}
+              accept="image/*"
+            /> : null}
 
+            <Switcher
+              enabled={formData.prompt_optimizer}
+              onChange={() => handleChange('prompt_optimizer', !formData.prompt_optimizer)}
+              label="Если установить значение true, функция будет ждать генерации и загрузки изображения, прежде чем вернуть ответ. Это увеличит задержку функции, но позволит получить изображение непосредственно в ответе, минуя CDN."
+            />
 
             <button
               disabled={loading}
@@ -134,10 +180,8 @@ function OpenAiWaterMarkRemoveForm() {
 
         {generatedContent ? <Image src={generatedContent} href={generatedContent} /> : null}
       </div>
-
-      {generatedContent ? <Video src={generatedContent} href={generatedContent} /> : null}
     </Wrapper>
   );
 }
 
-export default OpenAiWaterMarkRemoveForm;
+export default Hailuo2Form;
